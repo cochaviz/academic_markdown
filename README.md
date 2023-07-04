@@ -13,3 +13,9 @@ is:
 Building the document can be done in two ways:
 
 A docker image is provided by `pandoc` (`pandoc/extra`) which will
+
+## VS Code
+
+- [Pandoc Citer](https://marketplace.visualstudio.com/items?itemName=notZaki.pandocciter)
+- [Markdown All in
+  One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
