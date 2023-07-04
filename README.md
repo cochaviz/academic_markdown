@@ -6,7 +6,7 @@ is:
 
 - Citations with `.bib`
 - Figures with captions
-- Export to $\Latex$, `markdown`, `HTML`
+- Export to $\LaTeX$, `markdown`, `HTML`
 
 ## Prerequisites
 

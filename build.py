@@ -44,7 +44,7 @@ if __name__=="__main__":
     parser.add_argument("source")
     parser.add_argument("target")
     parser.add_argument("--options", default="", type=str)
-    parser.add_argument("--pandoc", action="store_true")
+    parser.add_argument("--pandoc", default="pandoc", type=str)
     parser.add_argument("--docker", action="store_true")
     
     missing = check_prerequisites()
@@ -54,4 +54,4 @@ if __name__=="__main__":
 
     args = parser.parse_args()
 
-    exit(main(args.source, args.target, args.options, docker=args.docker))
+    exit(main(args.source, args.target, args.options, pandoc=args.pandoc, docker=args.docker))
