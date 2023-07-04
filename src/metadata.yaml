@@ -1,0 +1,7 @@
+title: Academic Markdown - A Guide
+author: Zohar Cochavi
+
+bibliography: 
+ - src/bibliography.bib
+
+# documentclass: apa7
