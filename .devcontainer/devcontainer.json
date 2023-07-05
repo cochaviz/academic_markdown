@@ -1,0 +1,15 @@
+{
+  "build": { "dockerfile": "../Dockerfile" },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-preview-github-styles",
+        "DavidAnson.vscode-markdownlint",
+        "notZaki.pandocciter",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}
