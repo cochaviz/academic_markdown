@@ -14,11 +14,14 @@ In _Workflow_, I will show how I work with these tools.
 
 ## Quickstart
 
-To start, you can choose to use the provided Dockerfile to set up a Docker
-container, install the required dependencies (`pandoc`, `pandoc-crossref`, and
-$\LaTeX$) yourself, or open this template in a Github code-space.
-
-[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown)
+To start, you can choose to [use the provided
+Dockerfile](https://www.docker.com/) to set up a Docker container, install the
+required dependencies ([`pandoc`](https://pandoc.org/),
+[`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
+[$\LaTeX$](https://www.latex-project.org/)) yourself, open this template in a
+Github code-space (green button in the top-right of the repository), or [open
+locally in a VSCode
+dev-container](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown).
 
 ## Capabilities
 
