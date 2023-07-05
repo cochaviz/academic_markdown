@@ -23,10 +23,10 @@ To start, you can choose to:
 - [Use the provided Dockerfile](https://www.docker.com/) to set up a Docker
 container
 
-- Install the required dependencies ([`Python (3.11)`](https://www.python.org/),
+- Install the required dependencies ([Python (3.11)](https://www.python.org/),
 [`pandoc`](https://pandoc.org/),
 [`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
-[$\LaTeX$](https://www.latex-project.or/)) yourself
+[LaTeX](https://www.latex-project.or/)) yourself
 
 - Open this template in a Github codespace (green button in the top-right of the
 repository)
@@ -47,7 +47,7 @@ the files according to the current folder structure. This is just a proxy for
 In case you'd like to build manually, refer to the usage of `build.py` in the
 command line:
 
-```bash
+```txt
 $ ./build.py -h
 usage: build.py [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] source target
 
