@@ -1,0 +1,90 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build document",
+            "type": "shell",
+            "command": "python ${workspaceFolder}/build.py ${input:source} ${input:target}",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+            }
+        },
+        {
+            "label": "Build document (Docker)",
+            "type": "shell",
+            "command": "python ${workspaceFolder}/build.py --docker ${input:source} ${input:target}",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+            }
+
+        },
+        {
+            "label": "Build all",
+            "type": "shell",
+            "command": "python ${workspaceFolder}/build.py src ${input:target}",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+            }
+
+        },
+        {
+            "label": "Build all (Docker)",
+            "type": "shell",
+            "command": "python ${workspaceFolder}/build.py --docker src ${input:target}",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+            }
+
+        }
+    ],
+    "inputs": [
+        {
+            "id": "source",
+            "description": "Please enter the source directory, or file",
+            "default": "src",
+            "type": "promptString"
+        },
+        {
+            "id": "target",
+            "description": "Please enter the target file and extension (pdf, tex, md, html)",
+            "default": "out.pdf",
+            "type": "promptString"
+        }
+    ]
+}
