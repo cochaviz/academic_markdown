@@ -1,5 +1,7 @@
 # Academic Markdown - Tools and Guide
 
+[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown)
+
 This repository contains my workflow for using markdown and pandoc for academic
 writing and serves as a template for that workflow. If you're just looking to
 try it out, press the green button that says _Use This Template_ and open in a
