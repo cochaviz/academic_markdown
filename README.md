@@ -77,3 +77,52 @@ For my writing, I wanted to be able to do the following things:
 This repository is my attempt at making an academic writing workflow that is as
 frictionless as possible without losing the configurability provided by the used
 tools.
+
+## Motivation
+
+My philosophy is as follows: Markdown is a great format to write in, but lacks
+configurability. $\LaTeX$ is great for configurability, but rather hard to write
+in (updates take quite a while to render, and the syntax is sometimes rather
+distracting). One should focus on writing first, and then make small adjustments
+where necessary. For this reason, I first write in Markdown and then convert to
+PDF through $\LaTeX$. In case I would like to customize certain aspects of the
+exported file, I export to $\LaTeX$ and then to pdf.
+
+While all of this is supported by `pandoc`, finding a system to work with this
+is not necessarily trivial. This repository should provide everything necessary
+to make the above workflow as smooth as possible while still allowing for
+personalization.
+
+## Project Setup
+
+In this repository, I assume two types of document writing. Either writing in a
+single markdown file (for example a small report) or decomposing sections in
+markdown separate files. The way in which these are detected is by providing a
+frontmatter in the single markdown file or `metadata.yaml` file respectively.
+
+```txt
+Setup with single file
+
+├── build.py
+├── Dockerfile
+├── README.md
+└── src
+    ├── my_report.md
+    ├── bibliography.bib
+    └── images
+```
+
+```txt
+Setup with multiple files
+
+├── build.py
+├── Dockerfile
+├── README.md
+└── src
+    ├── 01_introduction.md
+    ├── 02_methodology.md
+    ├── 03_conclusion.md
+    ├── bibliography.bib
+    ├── images
+    └── metadata.yaml
+```
