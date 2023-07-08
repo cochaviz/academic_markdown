@@ -5,11 +5,52 @@ import os
 import io
 import yaml
 import distutils.spawn
+import re
 
-def get_bibliographies(path) -> list[str]:
-    with io.open(f"{os.path.dirname(path)}/metadata.yaml", "r") as stream:
-        metadata = yaml.safe_load(stream)
-        return metadata["bibliography"]
+from enum import Enum
+
+class Target(Enum):
+    PDF="pdf"
+    HTML="html"
+    MARKDOWN="markdown"    
+    LATEX="latex"
+
+def _get_bibliographies(path) -> list[str] | None:
+    try:
+        with io.open(f"{os.path.dirname(path)}/metadata.yaml", "r") as stream:
+            metadata = yaml.safe_load(stream)
+            try:
+                return metadata["bibliography"]
+            except:
+                return None
+    except FileNotFoundError:
+        return None
+
+def _get_title(path) -> str | None:
+    search_dir = path + "/" if os.path.isdir(path) else os.path.dirname(path)
+     
+    try:
+        with io.open(f"{search_dir}/metadata.yaml", "r") as stream:
+            metadata = yaml.safe_load(stream)
+
+            try:
+                return metadata["title"]
+            except:
+                print("Could not find key 'title' in metadata")
+                return None
+    except FileNotFoundError:
+        print(f"Could not find file in path: {search_dir}")
+        return None
+
+def _any_to_filename(string: str):
+    # keep alphanumeric
+    filename = "".join(c for c in string if (c.isalnum() or c == " ")) 
+    # remove any spaces and replace with underscore
+    filename = re.sub("\ +", "_", filename)
+    # make lowercase
+    filename = filename.lower()
+
+    return filename
 
 def check_prerequisites(pandoc: str) -> None | list[str | list[str]]:
     dependencies = [
@@ -36,31 +77,41 @@ def check_prerequisites(pandoc: str) -> None | list[str | list[str]]:
             
     return missing
 
-def _build_single(pandoc: str, source: str, target: str, options: str):
+def _build_single(pandoc: str, source: str, filename: str, options: str):
     metadata_file = f"{os.path.dirname(source)}/metadata.yaml"
 
     if os.path.exists(metadata_file):
         options += f" --metadata-file={metadata_file}"
 
-    return os.system(f"{pandoc} -F pandoc-crossref --citeproc {options} -i {source} -o {target}") 
+    return os.system(f"{pandoc} -F pandoc-crossref --citeproc \
+                    -f markdown {options} {source} -o {filename}") 
 
-def _build_folder(pandoc: str, source: str, target: str, options: str):
-    return os.system(f"{pandoc} -F pandoc-crossref --citeproc {options} \
-    --metadata-file={source}/metadata.yaml -i {source}/*.md -o {target}")
+def _build_folder(pandoc: str, source: str, filename: str, options: str):
+    return os.system(f"{pandoc} -F pandoc-crossref --citeproc --metadata-file={source}/metadata.yaml \
+                     -f markdown {options} {source}/*.md -o {filename}")
 
 def main(source: str, target: str, options: str = "", docker: bool = False, pandoc: str = "pandoc"):
     if docker:
         pandoc = 'docker run --mount type=bind,source="$(pwd)",target=/var/data --workdir /var/data pandoc/extra'
 
-    if target.split(".")[-1] == "md":
-        options += " -s -f gfm"
-    if target.split(".")[-1] == "tex":
-        options += " -s"
+    if "md" in target:
+        options += "-t gfm"
+
+    # convert target to filename
+    if "." in target:
+        filename = target
+    else:
+        document_title = _get_title(source)
+
+        if document_title is not None:
+            filename = _any_to_filename(document_title) + f".{target}"
+        else:
+            filename = os.path.splitext(os.path.basename(source))[0] + f".{target}"
 
     if os.path.isdir(source):
-        return _build_folder(pandoc, source, target, options)
+        return _build_folder(pandoc, source, filename, options)
     else:
-        return _build_single(pandoc, source, target, options)
+        return _build_single(pandoc, source, filename, options)
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(prog="build.py", description=
@@ -72,7 +123,7 @@ if __name__=="__main__":
                         a single file, also mention the extension
                         (your_file.md).""") 
     parser.add_argument("target", help="""
-                        Target file and extension (e.g. my_project.pdf). Uses
+                        Target output file, or extension (pdf, md, tex, etc.). Uses
                         pandoc under the hood, so refer to their documentation
                         for the options. This build file has preselected options
                         for markdown, LaTeX, and PDF files.""")

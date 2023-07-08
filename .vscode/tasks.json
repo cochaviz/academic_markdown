@@ -4,7 +4,7 @@
         {
             "label": "Build document",
             "type": "shell",
-            "command": "python ${workspaceFolder}/build.py ${input:source} ${input:target}",
+            "command": "python ${workspaceFolder}/build.py ${relativeFile} ${input:target}",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -21,7 +21,7 @@
         {
             "label": "Build document (Docker)",
             "type": "shell",
-            "command": "python ${workspaceFolder}/build.py --docker ${input:source} ${input:target}",
+            "command": "python ${workspaceFolder}/build.py --docker ${relativeFile} ${input:target}",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -37,9 +37,9 @@
 
         },
         {
-            "label": "Build all",
+            "label": "Build folder",
             "type": "shell",
-            "command": "python ${workspaceFolder}/build.py src ${input:target}",
+            "command": "python ${workspaceFolder}/build.py ${relativeFileDirname} ${input:target}",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -55,9 +55,9 @@
 
         },
         {
-            "label": "Build all (Docker)",
+            "label": "Build folder (Docker)",
             "type": "shell",
-            "command": "python ${workspaceFolder}/build.py --docker src ${input:target}",
+            "command": "python ${workspaceFolder}/build.py --docker ${relativeFileDirname} ${input:target}",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -82,9 +82,15 @@
         },
         {
             "id": "target",
-            "description": "Please enter the target file and extension (pdf, tex, md, html)",
-            "default": "out.pdf",
-            "type": "promptString"
+            "description": "Indicate the export file type",
+            "options":[
+                "pdf",
+                "html",
+                "tex",
+                "md"
+            ],
+            "default": "pdf",
+            "type": "pickString"
         }
     ]
 }

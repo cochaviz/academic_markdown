@@ -1,3 +1,0 @@
-# Introduction
-
-[@BOOK:1]

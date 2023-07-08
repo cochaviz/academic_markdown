@@ -2,6 +2,6 @@ title: Academic Markdown - A Guide
 author: Zohar Cochavi
 
 bibliography: 
- - src/bibliography.bib
+ - multiple/bibliography.bib
 
 # documentclass: apa7
