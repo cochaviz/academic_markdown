@@ -10,14 +10,6 @@ import re
 import logging
 import glob
 
-from enum import Enum
-
-class Target(Enum):
-    PDF="pdf"
-    HTML="html"
-    MARKDOWN="markdown"    
-    LATEX="latex"
-
 def _open_metadata(path: str) -> dict[str, str] | None:
     assert os.path.isdir(path) # should not be hit
 
