@@ -56,13 +56,17 @@ usage: build.py [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] source tar
 Wrapper for `pandoc` providing sensible defaults for rendering from pandoc-flavored markdown used in academic writing.
 
 positional arguments:
-  source             Source file or folder. In the case that the source is a single file, also mention the extension (your_file.md).
-  target             Target file and extension (e.g. my_project.pdf). Uses pandoc under the hood, so refer to their documentation for the options. This build file has preselected options for markdown, LaTeX, and PDF files.
+  source             Source file or folder. In the case that the source is a single file, also mention the extension
+                     (your_file.md).
+  target             Target output file, or extension (pdf, md, tex, etc.). Uses pandoc under the hood, so refer to their
+                     documentation for the options. This build file has preselected options for markdown, LaTeX, and PDF
+                     files.
 
 options:
   -h, --help         show this help message and exit
   --options OPTIONS  Additional options to pass through to pandoc.
-  --pandoc PANDOC    Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the --docker option is set.
+  --pandoc PANDOC    Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the
+                     --docker option is set.
   --docker           Use docker configuration to build, requires docker to be installed.
 ```
 
@@ -127,4 +131,13 @@ Setup with multiple files
     ├── bibliography.bib
     ├── images
     └── metadata.yaml
+```
+
+## Examples
+
+Some examples to show how I imagine you might want to work with this tool. For
+example, _building this README_.
+
+```bash
+python3 build.py README.md pdf
 ```
