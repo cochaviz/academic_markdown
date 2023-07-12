@@ -7,14 +7,14 @@ abstract: This is a
 bibliography: single/bibliography.bib
 ---
 
-# Introduction
+## Introduction
 
 Hi, this is the introduction.
 
-# Background
+## Background
 
 This is some background information.
 
-# Conclusion
+## Conclusion
 
 And, finally, the conclusion.

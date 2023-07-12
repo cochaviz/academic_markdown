@@ -6,6 +6,7 @@ import io
 import yaml
 import distutils.spawn
 import re
+import subprocess
 
 import logging
 import glob
@@ -106,9 +107,6 @@ def _build_folder(pandoc: str, source: str, filename: str, options: str):
 def main(source: str, target: str, options: str = "", docker: bool = False, pandoc: str = "pandoc"):
     if docker:
         pandoc = 'docker run --mount type=bind,source="$(pwd)",target=/var/data --workdir /var/data pandoc/extra'
-
-    if "md" in target:
-        options += "-t gfm"
     
     # set source to file if folder contains only one file
     if os.path.isdir(source):
@@ -117,6 +115,13 @@ def main(source: str, target: str, options: str = "", docker: bool = False, pand
         if len(markdown_in_folder) == 1:
             source = markdown_in_folder[0]
             logging.info(f"Only one file was found in given folder, updating source to {source}")
+
+    # set options
+    if "md" in target:
+        options += "-t gfm"
+
+    if not "md" in target and os.path.isfile(source):
+        options += "--shift-heading-level=-1"
 
     # convert target to filename
     if "." in target:
@@ -129,10 +134,16 @@ def main(source: str, target: str, options: str = "", docker: bool = False, pand
         else:
             out_filename = f"{os.path.splitext(os.path.basename(source))[0]}.{target}"
 
+    logging.info(f"Writing to {out_filename}...")
+
     if os.path.isdir(source):
-        return _build_folder(pandoc, source, out_filename, options)
+        if _build_folder(pandoc, source, out_filename, options) != 0:
+            exit(1)
     else:
-        return _build_single(pandoc, source, out_filename, options)
+        if _build_single(pandoc, source, out_filename, options) != 0:
+            exit(1)
+
+    return out_filename
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(prog="build.py", description=
@@ -159,6 +170,8 @@ if __name__=="__main__":
                         be installed.""")
     parser.add_argument("--log", type=str, help=
                         """Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.""")
+    parser.add_argument("--open-in-reader", action="store_true", help=
+                        """Open output file in default reader""")
     
     args = parser.parse_args()
 
@@ -178,4 +191,8 @@ if __name__=="__main__":
         logging.basicConfig(level=numeric_level)
 
     logging.debug("Debugging 🤓")
-    exit(main(args.source, args.target, args.options, pandoc=args.pandoc, docker=args.docker))
+
+    out_filename = main(args.source, args.target, args.options, pandoc=args.pandoc, docker=args.docker)
+
+    if args.open_in_reader:
+        subprocess.call(["xdg-open", out_filename])
