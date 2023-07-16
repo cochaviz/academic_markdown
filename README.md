@@ -5,7 +5,7 @@
 This repository contains my workflow for using markdown and pandoc for academic
 writing and serves as a template for that workflow. If you're just looking to
 try it out, press the green button that says _Use This Template_ and open in a
-codespace.  Otherwise, continue reading to set up a more permanent version of
+codespace. Otherwise, continue reading to set up a more permanent version of
 this environment.
 
 In this README, you will find instructions on how to use `build.py` and the
@@ -23,18 +23,18 @@ which the source can be found in `src/`.
 To start, you can choose to:
 
 - [Use the provided Dockerfile](https://www.docker.com/) to set up a Docker
-container
+  container
 
 - Install the required dependencies ([Python (3.11)](https://www.python.org/),
-[`pandoc`](https://pandoc.org/),
-[`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
-[LaTeX](https://www.latex-project.or/)) yourself
+  [`pandoc`](https://pandoc.org/),
+  [`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
+  [LaTeX](https://www.latex-project.or/)) yourself
 
 - Open this template in a Github codespace (green button in the top-right of the
-repository)
+  repository)
 
 - [Open locally in a VSCode
-devcontainer](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown).
+  devcontainer](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown).
 
 If you are on Github, using codespaces is definitely the easiest if you'd just
 like to have a look around.
@@ -104,7 +104,7 @@ personalization.
 In this repository, I assume two types of document writing. Either writing in a
 single markdown file (for example a small report) or decomposing sections in
 markdown separate files. The way in which these are detected is by providing a
-frontmatter in the single markdown file or `metadata.yaml` file respectively.
+front-matter in the single markdown file or `metadata.yaml` file respectively.
 
 ```txt
 Setup with single file
@@ -135,9 +135,48 @@ Setup with multiple files
 
 ## Examples
 
-Some examples to show how I imagine you might want to work with this tool. For
-example, _building this README_.
+Some examples to show how I imagine you might want to work with this tool.
+
+### Building this README
 
 ```bash
 python3 build.py README.md pdf
 ```
+
+### Building a Single File to PDF
+
+```bash
+python3 build.py single pdf
+```
+
+### Building Multiple Files to Markdown
+
+```bash
+python3 build.py multiple md
+```
+
+### Building a Single File from Multiple to PDF
+
+```bash
+python3 build.py multiple/01_introduction.md pdf
+```
+
+Front-matter metadata defined in `multiple/01_introduction.md` will overwrite
+`multiple/metadata.yaml`.
+
+## Roadmap
+
+- [ ] **Full Manual**. A complete and detailed explanation of how this workflow
+      can be used. This should be an instruction for any person that would like
+      to user markdown for serious writing. It should provide an introduction to
+      `pandoc`, docker, and VSCode.
+- [ ] **Predefined devcontainer**. This will prevent long waiting times for using
+      a devcontainer both locally and in codespaces.
+- [ ] **Github Actions for building**. Use Github Actions to automatically
+      build to PDF/$\LaTeX$ according to user preferences. This could be useful
+      for ensuring rendered documents are always up-to-date, and avoiding the
+      necessity for local builds. Could, perhaps, also be faster than building
+      locally and pushing.
+- [ ] **Independent VSCode Extension**. A VSCode extension, independent of
+      `build.py`. This could be an improved user-experience for existing VSCode
+      users. This template should, however, still be as usable without VSCode.
