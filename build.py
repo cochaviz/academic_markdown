@@ -36,18 +36,18 @@ def _get_metadata(path: str, property: str | None = None ) -> str | None:
     try:
         metadata = _open_metadata(search_dir)
     except FileNotFoundError as e:
-        logging.info(f"Metadata: Could not find metadata.yaml in folder {search_dir}")
+        logging.info(f"metadata: Could not find metadata.yaml in folder {search_dir}")
 
     try:
         metadata = _open_frontmatter(path)
     except ValueError:
-        logging.info(f"Frontmatter: {path} is not a file")
+        logging.info(f"frontmatter: {path} is not a file")
     except ImportError:
-        logging.warning(f"Frontmatter: Module 'frontmatter' not installed, cannot read frontmatter from {path}")
+        logging.warning(f"frontmatter: Module 'frontmatter' not installed, cannot read frontmatter from {path}")
     except FileNotFoundError as e:
-        logging.warning(f"Frontmatter: Could not find file {path}")
+        logging.warning(f"frontmatter: Could not find file {path}")
     except AttributeError:
-        logging.info(f"Frontmatter: File {path} does not contain frontmatter")
+        logging.info(f"frontmatter: File {path} does not contain frontmatter")
 
     if metadata is not None and property is not None:
         try:
@@ -106,6 +106,11 @@ def _build_folder(pandoc: str, source: str, filename: str, options: str):
 
 def main(source: str, target: str, options: str = "", docker: bool = False, pandoc: str = "pandoc"):
     if docker:
+        if os.path.exists("/.dockerenv"):
+            logging.warning("""docker:Docker option seems to be enabled inside a
+                            docker container. If you're in a docker container,
+                            consider omitting this option.""")
+             
         pandoc = 'docker run --mount type=bind,source="$(pwd)",target=/var/data --workdir /var/data pandoc/extra'
     
     # set source to file if folder contains only one file
