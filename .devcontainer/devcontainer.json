@@ -8,7 +8,8 @@
         "bierner.markdown-preview-github-styles",
         "DavidAnson.vscode-markdownlint",
         "notZaki.pandocciter",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "tomoki1207.vscode-pdf"
       ]
     }
   }
