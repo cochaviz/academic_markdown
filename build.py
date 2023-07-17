@@ -175,7 +175,7 @@ if __name__=="__main__":
                         be installed.""")
     parser.add_argument("--log", type=str, help=
                         """Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.""")
-    parser.add_argument("--open-in-reader", action="store_true", help=
+    parser.add_argument("--open-in-reader", action="store_false", help=
                         """Open output file in default reader""")
     
     args = parser.parse_args()

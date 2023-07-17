@@ -1,90 +1,82 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Build document",
-            "type": "shell",
-            "command": "python3 ${workspaceFolder}/build.py --open-in-reader ${relativeFile} ${input:target}",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-            }
-        },
-        {
-            "label": "Build document (Docker)",
-            "type": "shell",
-            "command": "python3 ${workspaceFolder}/build.py --open-in-reader --docker ${relativeFile} ${input:target}",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-            }
-
-        },
-        {
-            "label": "Build folder",
-            "type": "shell",
-            "command": "python3 ${workspaceFolder}/build.py --open-in-reader ${relativeFileDirname} ${input:target}",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-            }
-
-        },
-        {
-            "label": "Build folder (Docker)",
-            "type": "shell",
-            "command": "python3 ${workspaceFolder}/build.py --open-in-reader --docker ${relativeFileDirname} ${input:target}",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-            }
-
-        }
-    ],
-    "inputs": [
-        {
-            "id": "target",
-            "description": "Indicate the export file type",
-            "options":[
-                "pdf",
-                "html",
-                "tex",
-                "md"
-            ],
-            "default": "pdf",
-            "type": "pickString"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build document",
+      "type": "shell",
+      "command": "python3 ${workspaceFolder}/build.py ${relativeFile} ${input:target}",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Build document (Docker)",
+      "type": "shell",
+      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFile} ${input:target}",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Build folder",
+      "type": "shell",
+      "command": "python3 ${workspaceFolder}/build.py ${relativeFileDirname} ${input:target}",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Build folder (Docker)",
+      "type": "shell",
+      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFileDirname} ${input:target}",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "target",
+      "description": "Indicate the export file type",
+      "options": ["pdf", "html", "tex", "md"],
+      "default": "pdf",
+      "type": "pickString"
+    }
+  ]
 }
