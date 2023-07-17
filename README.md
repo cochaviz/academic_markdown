@@ -4,8 +4,8 @@
 
 This repository contains my workflow for using markdown and pandoc for academic
 writing and serves as a template for that workflow. If you're just looking to
-try it out, press the green button that says _Use This Template_ and open in a
-codespace. Otherwise, continue reading to set up a more permanent version of
+try it out, press the green button that says _Use This Template_ and open it in
+a codespace. Otherwise, continue reading to set up a more permanent version of
 this environment.
 
 In this README, you will find instructions on how to use `build.py` and the
@@ -86,7 +86,7 @@ tools.
 
 ## Motivation
 
-My philosophy is as follows: Markdown is a great format to write in, but lacks
+My philosophy is as follows: Markdown is a great format to write in but lacks
 configurability. $\LaTeX$ is great for configurability, but rather hard to write
 in (updates take quite a while to render, and the syntax is sometimes rather
 distracting). One should focus on writing first, and then make small adjustments
@@ -101,10 +101,10 @@ personalization.
 
 ## Project Setup
 
-In this repository, I assume two types of document writing. Either writing in a
-single markdown file (for example a small report) or decomposing sections in
+In this repository, I assume two types of document writing. Either by writing in
+a single markdown file (for example a small report) or decomposing sections in
 markdown separate files. The way in which these are detected is by providing a
-front-matter in the single markdown file or `metadata.yaml` file respectively.
+front matter in the single markdown file or `metadata.yaml` file respectively.
 
 ```txt
 Setup with single file
@@ -170,19 +170,18 @@ Front-matter metadata defined in `multiple/01_introduction.md` will overwrite
       automation and quality-of-life improvements would be in place.
 
 - [ ] **Full Manual**. A complete and detailed explanation of how this workflow
-      can be used. This should be an instruction for any person that would like
-      to user markdown for serious writing. It should provide an introduction to
+      can be used. This should be an instruction for any person that would like to use markdown for serious writing. It should provide an introduction to
       `pandoc`, docker, and VSCode.
 
 - [ ] **Predefined devcontainer**. This will prevent long waiting times for using
       a devcontainer both locally and in codespaces.
 
-- [ ] **Github Actions for building**. Use Github Actions to automatically
+- [ ] **Github Actions for building**. Use GitHub Actions to automatically
       build to PDF/$\LaTeX$ according to user preferences. This could be useful
       for ensuring rendered documents are always up-to-date, and avoiding the
       necessity for local builds. Could, perhaps, also be faster than building
       locally and pushing.
 
 - [ ] **Independent VSCode Extension**. A VSCode extension, independent of
-      `build.py`. This could be an improved user-experience for existing VSCode
+      `build.py`. This could be an improved user experience for existing VSCode
       users. This template should, however, still be as usable without VSCode.
