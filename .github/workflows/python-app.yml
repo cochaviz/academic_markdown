@@ -37,7 +37,7 @@ jobs:
     - name: Build documents
       run: |
         for folder in $(ls **/*.md | grep -Po ".+/" | uniq); do
-          python3 build.py --docker $folder pdf
+          python3 build.py --docker --open-in-reader $folder pdf
         done
         - name: capture build artifacts
         
