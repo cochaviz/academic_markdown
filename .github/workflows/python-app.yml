@@ -38,9 +38,7 @@ jobs:
       run: |
         for folder in $(ls **/*.md | grep -Po ".+/" | uniq); do
           python3 build.py --docker --open-in-reader $folder pdf
-        done
-        - name: capture build artifacts
-        
+        done        
     - name: Create artifact
       uses: actions/upload-artifact@v2
       with:
