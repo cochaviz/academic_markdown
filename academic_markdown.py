@@ -7,7 +7,7 @@ import yaml
 import distutils.spawn
 import re
 import subprocess
-import sys
+import shutil
 
 import logging
 import glob
@@ -77,44 +77,41 @@ def _title_to_filename(title: str):
 
     return filename
 
-def check_in_path(dependencies) -> None | list[str | list[str]]:
+def check_in_path(dependencies: list[str]) -> None | list[str]:
     missing = []
 
     for dependency in dependencies:
-        if isinstance(dependency, list):
-            possible_available = []
-
-            for possible_dependency in dependency:
-                if distutils.spawn.find_executable(possible_dependency):
-                    possible_available.append(possible_dependency)
-                    break
-            if possible_available == 0:
-                missing.append(dependency)
-        else:  
-            if not distutils.spawn.find_executable(dependency):
+            if shutil.which(dependency) is None:
                 missing.append(dependency)
             
     return missing
 
-def _build_single(pandoc: str, source: str, filename: str, options: str):
+def _build_single(pandoc: list[str], source: str, filename: str, options: list[str]):
     metadata_file = f"{os.path.dirname(source)}/metadata.yaml"
 
     if os.path.exists(metadata_file):
-        options += f" --metadata-file={metadata_file}"
+        options.append(f"--metadata-file={metadata_file}")
 
-    return os.system(f"{pandoc} -s -F pandoc-crossref --citeproc \
-                    -f markdown {options} {source} -o {filename}") 
+    return subprocess.run([*pandoc, "-s", "-F", "pandoc-crossref", "--citeproc",
+                    "--from=markdown+mark", *options, source, "-o", filename]) 
 
-def _build_folder(pandoc: str, source: str, filename: str, options: str):
-    return os.system(f"{pandoc} -s -F pandoc-crossref --citeproc --metadata-file={source}/metadata.yaml \
-                     -f markdown {options} {source}/*.md -o {filename}")
+def _build_folder(pandoc: list[str], source: str, filename: str, options: list[str]):
+
+    return subprocess.run([*pandoc, "-s", "-F", "pandoc-crossref", "--citeproc", 
+                           f"--metadata-file={source}/metadata.yaml", "--from=markdown+mark", 
+                           *options, *glob.glob(f"{source}/*.md"), f"--output={filename}"])
 
 def main(source: str, target: str, 
          options: str = "", docker: bool = False, 
-         pandoc: str = "pandoc", texliveonfly: bool = False):
+         pandoc: str = "pandoc", tectonic: bool = False):
+        
     if docker:
         _docker_in_container_warning(docker)
-        pandoc = 'docker run --mount type=bind,source="$(pwd)",target=/var/data -w /var/data cochaviz/academic_markdown'
+        pwd = os.getcwd()
+        pandoc = ["docker", "run", "--mount", f"type=bind,source={pwd},target=/var/data", 
+                  "--workdir=/var/data", "cochaviz/academic_markdown"]
+    else:
+        pandoc = [pandoc]
     
     # set source to file if folder contains only one file
     if os.path.isdir(source):
@@ -122,14 +119,15 @@ def main(source: str, target: str,
         
         if len(markdown_in_folder) == 1:
             source = markdown_in_folder[0]
-            logging.info(f"Only one file was found in given folder, updating source to {source}")
+            logging.info(f"Only one file was found in given folder, \
+                updating source to {source}")
 
     # set options
     if "md" in target:
-        options += "-t gfm"
+        options.append("--to=gfm")
 
     if not "md" in target and os.path.isfile(source):
-        options += "--shift-heading-level=-1"
+        options.append("--shift-heading-level=-1")
 
     # convert target to filename
     if "." in target:
@@ -142,9 +140,8 @@ def main(source: str, target: str,
         else:
             out_filename = f"{os.path.splitext(os.path.basename(source))[0]}.{target}"
 
-    # texliveonfly currently not supported as pdfengine
-    if texliveonfly and not docker:
-        pandoc = "./.devcontainer/pandoc-texliveonfly.py"
+    if tectonic or docker:
+        options.append("--pdf-engine=tectonic")
 
     logging.info(f"Writing to {out_filename}...")
 
@@ -171,7 +168,7 @@ if __name__=="__main__":
                         pandoc under the hood, so refer to their documentation
                         for the options. This build file has preselected options
                         for markdown, LaTeX, and PDF files.""")
-    parser.add_argument("--options", default="", type=str, help=
+    parser.add_argument("--options", default="", type=list[str], help=
                         """Additional options to pass through to pandoc.""")
     parser.add_argument("--pandoc", default="pandoc", type=str, help=
                         """Path to pandoc in case it cannot be provided through the
@@ -184,8 +181,8 @@ if __name__=="__main__":
                         """Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.""")
     parser.add_argument("--do-not-open", action="store_true", help=
                         """Do not open output in default code.""")
-    parser.add_argument("--on-the-fly", action="store_true", help=
-                        """Use texliveonfly when creating PDFs to install
+    parser.add_argument("--tectonic", action="store_true", help=
+                        """Use tectonic when creating PDFs to install
                         missing packages on the fly. Is ignored when docker is
                         used.""")
     
@@ -196,17 +193,17 @@ if __name__=="__main__":
         dependencies = [
             args.pandoc,
             "pandoc-crossref",
-            ["pdflatex", "xelatex"],
+            "pdflatex",
         ]
 
-        if args.on_the_fly:
-            dependencies.append("texliveonfly")
+        if args.tectonic:
+            dependencies.append("tectonic")
 
         missing = check_in_path(dependencies)
 
         if len(missing) != 0:
-            logging.critical("Not all dependencies could be found:", missing, 
-                "\nPlease ensure they are all in the PATH.")
+            logging.critical(f"Not all dependencies could be found: {missing}. \
+                Please ensure they are all in the PATH.")
             exit(1)
 
     # enabling logging
@@ -224,17 +221,17 @@ if __name__=="__main__":
         args.source, args.target, 
         args.options, 
         pandoc=args.pandoc, docker=args.docker,
-        texliveonfly=args.on_the_fly
+        tectonic=args.tectonic
     )
 
     # open created file first by trying to open in VSCode, then with the
     # default pdf reader. Not sure whether this should be the other way around
     if not args.do_not_open:
         try:
-            subprocess.call(["code", out_filename])
+            subprocess.run(["code", out_filename])
         except FileNotFoundError:
             try:
-                subprocess.call(["xdg-open", out_filename])
+                subprocess.run(["xdg-open", out_filename])
             except FileNotFoundError:
                 logging.warning(f"Could not open {out_filename} using either 'code' or 'xdg-open'") 
                 exit(0)

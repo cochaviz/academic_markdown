@@ -76,6 +76,13 @@
         "dockerfile": "${workspaceFolder}/.devcontainer/Dockerfile",
         "tag": "cochaviz/academic_markdown",
         "pull": true
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
       }
     }
   ],
