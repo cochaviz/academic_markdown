@@ -166,11 +166,14 @@ Front-matter metadata defined in `multiple/01_introduction.md` will overwrite
 
 ## Roadmap
 
-- [ ] **Dockerized Environment**. Currently it sort of works, but some more
-      automation and quality-of-life improvements would be in place.
+- [x] **Dockerized Environment**. Lightweight dockerized environment that allows
+      for a full replacement of `pandoc`. Also automatically downloads missing
+      latex
+      packages.
 
 - [ ] **Full Manual**. A complete and detailed explanation of how this workflow
-      can be used. This should be an instruction for any person that would like to use markdown for serious writing. It should provide an introduction to
+      can be used. This should be an instruction for any person that would like
+      to use markdown for serious writing. It should provide an introduction to
       `pandoc`, docker, and VSCode.
 
 - [ ] **Predefined devcontainer**. This will prevent long waiting times for using
