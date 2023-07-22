@@ -140,7 +140,7 @@ def main(source: str, target: str,
             out_filename = f"{os.path.splitext(os.path.basename(source))[0]}.{target}"
 
     # texliveonfly currently not supported as pdfengine
-    if texliveonfly:
+    if texliveonfly and not docker:
         pandoc = "./.devcontainer/pandoc-texliveonfly.py"
 
     logging.info(f"Writing to {out_filename}...")
