@@ -1,0 +1,5 @@
+# latex build files
+**/*.aux
+**/*.log
+**/*.spl
+**/*.synctex.gz

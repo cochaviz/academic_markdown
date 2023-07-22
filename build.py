@@ -66,12 +66,7 @@ def _title_to_filename(title: str):
 
     return filename
 
-def check_prerequisites(pandoc: str) -> None | list[str | list[str]]:
-    dependencies = [
-        pandoc,
-        "pandoc-crossref",
-        ["pdflatex", "xelatex"]
-    ]
+def check_in_path(dependencies) -> None | list[str | list[str]]:
 
     missing = []
 
@@ -97,14 +92,16 @@ def _build_single(pandoc: str, source: str, filename: str, options: str):
     if os.path.exists(metadata_file):
         options += f" --metadata-file={metadata_file}"
 
-    return os.system(f"{pandoc} -F pandoc-crossref --citeproc \
+    return os.system(f"{pandoc} -s -F pandoc-crossref --citeproc \
                     -f markdown {options} {source} -o {filename}") 
 
 def _build_folder(pandoc: str, source: str, filename: str, options: str):
-    return os.system(f"{pandoc} -F pandoc-crossref --citeproc --metadata-file={source}/metadata.yaml \
+    return os.system(f"{pandoc} -s -F pandoc-crossref --citeproc --metadata-file={source}/metadata.yaml \
                      -f markdown {options} {source}/*.md -o {filename}")
 
-def main(source: str, target: str, options: str = "", docker: bool = False, pandoc: str = "pandoc"):
+def main(source: str, target: str, 
+         options: str = "", docker: bool = False, 
+         pandoc: str = "pandoc", texliveonfly: bool = False):
     if docker:
         if os.path.exists("/.dockerenv"):
             logging.warning("""docker:Docker option seems to be enabled inside a
@@ -139,6 +136,12 @@ def main(source: str, target: str, options: str = "", docker: bool = False, pand
         else:
             out_filename = f"{os.path.splitext(os.path.basename(source))[0]}.{target}"
 
+    # texliveonfly currently not supported as pdfengine
+    if "pdf" in target and texliveonfly:
+        updated = out_filename.split(".")
+        updated[-1] = "tex"
+        out_filename = ".".join(updated)
+
     logging.info(f"Writing to {out_filename}...")
 
     if os.path.isdir(source):
@@ -147,6 +150,14 @@ def main(source: str, target: str, options: str = "", docker: bool = False, pand
     else:
         if _build_single(pandoc, source, out_filename, options) != 0:
             exit(1)
+
+    # texliveonfly currently not supported as pdfengine
+    if "pdf" in target and texliveonfly:
+        subprocess.call(["texliveonfly", out_filename])
+
+        updated = out_filename.split(".")
+        updated[-1] = "pdf"
+        out_filename = ".".join(updated)
 
     return out_filename
 
@@ -175,17 +186,30 @@ if __name__=="__main__":
                         be installed.""")
     parser.add_argument("--log", type=str, help=
                         """Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.""")
-    parser.add_argument("--open-in-reader", action="store_false", help=
-                        """Open output file in default reader""")
+    parser.add_argument("--do-not-open", action="store_true", help=
+                        """Do not open output in default reader.""")
+    parser.add_argument("--on-the-fly", action="store_true", help=
+                        """Use texliveonfly when creating PDFs to install
+                        missing packages on the fly.""")
     
     args = parser.parse_args()
 
-    missing = check_prerequisites(args.pandoc)
+    if not args.docker:
+        dependencies = [
+            args.pandoc,
+            "pandoc-crossref",
+            ["pdflatex", "xelatex"],
+        ]
 
-    if not args.docker and len(missing) != 0:
-        logging.critical("Not all dependencies could be found:", missing, 
-              "\nPlease ensure they are all in the PATH.")
-        exit(1)
+        if args.on_the_fly:
+            dependencies.append("texliveonfly")
+
+        missing = check_in_path(dependencies)
+
+        if len(missing) != 0:
+            logging.critical("Not all dependencies could be found:", missing, 
+                "\nPlease ensure they are all in the PATH.")
+            exit(1)
 
     if args.log:
         numeric_level = getattr(logging, args.log.upper(), "WARNING")
@@ -197,7 +221,12 @@ if __name__=="__main__":
 
     logging.debug("Debugging 🤓")
 
-    out_filename = main(args.source, args.target, args.options, pandoc=args.pandoc, docker=args.docker)
+    out_filename = main(
+        args.source, args.target, 
+        args.options, 
+        pandoc=args.pandoc, docker=args.docker,
+        texliveonfly=args.on_the_fly
+    )
 
-    if args.open_in_reader:
-        subprocess.call(["xdg-open", out_filename])
+    if not args.do_not_open:
+        subprocess.call(["code", out_filename])
