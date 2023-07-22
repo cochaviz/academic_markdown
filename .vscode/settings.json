@@ -1,3 +1,0 @@
-{
-  "http.proxySupport": "on" // necessary for building dockerfile from .devcontainer
-}

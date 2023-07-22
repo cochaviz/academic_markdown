@@ -4,7 +4,7 @@
     {
       "label": "Build document",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/build.py ${relativeFile} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py ${relativeFile} ${input:target}",
       "problemMatcher": [],
       "group": {
         "kind": "build",
@@ -21,7 +21,7 @@
     {
       "label": "Build folder",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/build.py ${relativeFileDirname} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -38,7 +38,7 @@
       "label": "Build document (Docker)",
       "type": "shell",
       "dependsOn": ["docker-build"],
-      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFile} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py --docker ${relativeFile} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -54,8 +54,8 @@
     {
       "label": "Build folder (Docker)",
       "type": "shell",
-      // "dependsOn": ["Docker Build"],
-      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFileDirname} ${input:target}",
+      "dependsOn": ["Docker Build"],
+      "command": "python3 ${workspaceFolder}/academic_markdown.py --docker ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -72,7 +72,7 @@
       "label": "Docker Build",
       "type": "docker-build",
       "dockerBuild": {
-        "context": "${workspaceFolder}",
+        "context": "${workspaceFolder}/.devcontainer",
         "dockerfile": "${workspaceFolder}/.devcontainer/Dockerfile",
         "tag": "cochaviz/academic_markdown",
         "pull": true

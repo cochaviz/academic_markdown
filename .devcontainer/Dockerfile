@@ -15,7 +15,7 @@ RUN pip3 install -r requirements.txt
 RUN tlmgr install texliveonfly
 
 # install wrapper for texliveonfly
-COPY .devcontainer/pandoc-texliveonfly.py /usr/bin/
+COPY pandoc-texliveonfly.py /usr/bin/
 RUN chmod +x /usr/bin/pandoc-texliveonfly.py
 
 ENTRYPOINT [ "pandoc-texliveonfly.py" ]
