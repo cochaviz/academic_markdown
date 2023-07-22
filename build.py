@@ -187,7 +187,7 @@ if __name__=="__main__":
     parser.add_argument("--log", type=str, help=
                         """Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.""")
     parser.add_argument("--do-not-open", action="store_true", help=
-                        """Do not open output in default reader.""")
+                        """Do not open output in default code.""")
     parser.add_argument("--on-the-fly", action="store_true", help=
                         """Use texliveonfly when creating PDFs to install
                         missing packages on the fly.""")
