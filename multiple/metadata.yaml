@@ -4,4 +4,4 @@ author: Zohar Cochavi
 bibliography: 
  - multiple/bibliography.bib
 
-# documentclass: apa7
+documentclass: amsart

@@ -4,6 +4,7 @@ author: Zohar Cochavi
 abstract: This is a
   multiline abstract.
 
+documentclass: elsarticle
 bibliography: single/bibliography.bib
 ---
 
