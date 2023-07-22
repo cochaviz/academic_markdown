@@ -7,9 +7,16 @@ import yaml
 import distutils.spawn
 import re
 import subprocess
+import sys
 
 import logging
 import glob
+
+def _docker_in_container_warning(docker_option: bool) -> bool:
+    if os.path.exists("/.dockerenv") and docker_option:
+            logging.warning("""docker:Docker option seems to be enabled inside a
+                            docker container. If you're in a docker container,
+                            consider omitting this option.""")
 
 def _open_metadata(path: str) -> dict[str, str] | None:
     assert os.path.isdir(path) # should not be hit
@@ -103,12 +110,8 @@ def main(source: str, target: str,
          options: str = "", docker: bool = False, 
          pandoc: str = "pandoc", texliveonfly: bool = False):
     if docker:
-        if os.path.exists("/.dockerenv"):
-            logging.warning("""docker:Docker option seems to be enabled inside a
-                            docker container. If you're in a docker container,
-                            consider omitting this option.""")
-             
-        pandoc = 'docker run --mount type=bind,source="$(pwd)",target=/var/data --workdir /var/data pandoc/extra'
+        _docker_in_container_warning(docker)
+        pandoc = 'docker run --mount type=bind,source="$(pwd)",target=/var/data -w /var/data cochaviz/academic_markdown'
     
     # set source to file if folder contains only one file
     if os.path.isdir(source):
@@ -137,10 +140,8 @@ def main(source: str, target: str,
             out_filename = f"{os.path.splitext(os.path.basename(source))[0]}.{target}"
 
     # texliveonfly currently not supported as pdfengine
-    if "pdf" in target and texliveonfly:
-        updated = out_filename.split(".")
-        updated[-1] = "tex"
-        out_filename = ".".join(updated)
+    if texliveonfly:
+        pandoc = "./.devcontainer/pandoc-texliveonfly.py"
 
     logging.info(f"Writing to {out_filename}...")
 
@@ -150,14 +151,6 @@ def main(source: str, target: str,
     else:
         if _build_single(pandoc, source, out_filename, options) != 0:
             exit(1)
-
-    # texliveonfly currently not supported as pdfengine
-    if "pdf" in target and texliveonfly:
-        subprocess.call(["texliveonfly", out_filename])
-
-        updated = out_filename.split(".")
-        updated[-1] = "pdf"
-        out_filename = ".".join(updated)
 
     return out_filename
 
@@ -228,5 +221,12 @@ if __name__=="__main__":
         texliveonfly=args.on_the_fly
     )
 
-    if not args.do_not_open:
-        subprocess.call(["code", out_filename])
+    if not args.do_not_open and not args.docker:
+        try:
+            subprocess.call(["code", out_filename])
+        except FileNotFoundError:
+            try:
+                subprocess.call(["xdg-open", out_filename])
+            except FileNotFoundError:
+                logging.warning(f"Could not open {out_filename} using either 'code' or 'xdg-open'") 
+                exit(0)

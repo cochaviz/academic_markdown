@@ -19,27 +19,9 @@
       }
     },
     {
-      "label": "Build document (Docker)",
-      "type": "shell",
-      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFile} ${input:target}",
-      "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": false
-      },
-      "presentation": {
-        "echo": false,
-        "reveal": "silent",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true
-      }
-    },
-    {
       "label": "Build folder",
       "type": "shell",
       "command": "python3 ${workspaceFolder}/build.py ${relativeFileDirname} ${input:target}",
-      "problemMatcher": [],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -53,10 +35,10 @@
       }
     },
     {
-      "label": "Build folder (Docker)",
+      "label": "Build document (Docker)",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFileDirname} ${input:target}",
-      "problemMatcher": [],
+      "dependsOn": ["docker-build"],
+      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFile} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -67,6 +49,33 @@
         "focus": false,
         "panel": "shared",
         "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Build folder (Docker)",
+      "type": "shell",
+      // "dependsOn": ["Docker Build"],
+      "command": "python3 ${workspaceFolder}/build.py --docker ${relativeFileDirname} ${input:target}",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Docker Build",
+      "type": "docker-build",
+      "dockerBuild": {
+        "context": "${workspaceFolder}",
+        "dockerfile": "${workspaceFolder}/.devcontainer/Dockerfile",
+        "tag": "cochaviz/academic_markdown",
+        "pull": true
       }
     }
   ],
