@@ -19,9 +19,10 @@ def _docker_in_container_warning(docker_option: bool) -> bool:
                             consider omitting this option.""")
 
 def _open_metadata(path: str) -> dict[str, str] | None:
-    assert os.path.isdir(path) # should not be hit
+    assert os.path.isdir(path) # should not trigger
 
-    with io.open(f"{os.path.dirname(path)}/metadata.yaml", "r") as stream:
+    # open the 
+    with io.open(f"{path}/metadata.yaml", "r") as stream:
         metadata = yaml.safe_load(stream)
         return metadata
 
@@ -40,11 +41,13 @@ def _get_metadata(path: str, property: str | None = None ) -> str | None:
     search_dir = path + "/" if os.path.isdir(path) else os.path.dirname(path) + "/"
     metadata = None
 
+    # first try getting the metadata.yaml file
     try:
         metadata = _open_metadata(search_dir)
     except FileNotFoundError as e:
         logging.info(f"metadata: Could not find metadata.yaml in folder {search_dir}")
 
+    # then look for frontmatter
     try:
         metadata = _open_frontmatter(path)
     except ValueError:
@@ -56,6 +59,7 @@ def _get_metadata(path: str, property: str | None = None ) -> str | None:
     except AttributeError:
         logging.info(f"frontmatter: File {path} does not contain frontmatter")
 
+    # if we have a metadata file and are looking for a specific property
     if metadata is not None and property is not None:
         try:
             return metadata[property]  
@@ -74,7 +78,6 @@ def _title_to_filename(title: str):
     return filename
 
 def check_in_path(dependencies) -> None | list[str | list[str]]:
-
     missing = []
 
     for dependency in dependencies:
@@ -183,10 +186,12 @@ if __name__=="__main__":
                         """Do not open output in default code.""")
     parser.add_argument("--on-the-fly", action="store_true", help=
                         """Use texliveonfly when creating PDFs to install
-                        missing packages on the fly.""")
+                        missing packages on the fly. Is ignored when docker is
+                        used.""")
     
     args = parser.parse_args()
 
+    # not using docker means we have to check dependencies
     if not args.docker:
         dependencies = [
             args.pandoc,
@@ -204,6 +209,7 @@ if __name__=="__main__":
                 "\nPlease ensure they are all in the PATH.")
             exit(1)
 
+    # enabling logging
     if args.log:
         numeric_level = getattr(logging, args.log.upper(), "WARNING")
 
@@ -221,7 +227,9 @@ if __name__=="__main__":
         texliveonfly=args.on_the_fly
     )
 
-    if not args.do_not_open and not args.docker:
+    # open created file first by trying to open in VSCode, then with the
+    # default pdf reader. Not sure whether this should be the other way around
+    if not args.do_not_open:
         try:
             subprocess.call(["code", out_filename])
         except FileNotFoundError:
