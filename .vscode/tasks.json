@@ -4,7 +4,7 @@
     {
       "label": "Build document",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py ${relativeFile} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py build ${relativeFile} ${input:target}",
       "problemMatcher": [],
       "group": {
         "kind": "build",
@@ -13,7 +13,7 @@
       "presentation": {
         "echo": false,
         "reveal": "silent",
-        "focus": false,
+        "focus": true,
         "panel": "shared",
         "showReuseMessage": true
       }
@@ -21,7 +21,7 @@
     {
       "label": "Build folder",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py ${relativeFileDirname} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py build ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -29,7 +29,7 @@
       "presentation": {
         "echo": false,
         "reveal": "silent",
-        "focus": false,
+        "focus": true,
         "panel": "shared",
         "showReuseMessage": true
       }
@@ -38,7 +38,7 @@
       "label": "Build document (Docker)",
       "type": "shell",
       "dependsOn": ["docker-build"],
-      "command": "python3 ${workspaceFolder}/academic_markdown.py --docker ${relativeFile} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py build --docker ${relativeFile} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -46,7 +46,7 @@
       "presentation": {
         "echo": false,
         "reveal": "silent",
-        "focus": false,
+        "focus": true,
         "panel": "shared",
         "showReuseMessage": true
       }
@@ -55,7 +55,7 @@
       "label": "Build folder (Docker)",
       "type": "shell",
       "dependsOn": ["Docker Build"],
-      "command": "python3 ${workspaceFolder}/academic_markdown.py --docker ${relativeFileDirname} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py build --docker ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -63,7 +63,39 @@
       "presentation": {
         "echo": false,
         "reveal": "silent",
-        "focus": false,
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Chech health (Local)",
+      "type": "shell",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py check-health",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true
+      }
+    },
+    {
+      "label": "Chech health (Docker)",
+      "type": "shell",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py check-health --docker",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": true,
         "panel": "shared",
         "showReuseMessage": true
       }
@@ -78,11 +110,11 @@
         "pull": true
       },
       "presentation": {
-        "echo": false,
+        "echo": true,
         "reveal": "silent",
         "focus": false,
-        "panel": "shared",
-        "showReuseMessage": false
+        "panel": "dedicated",
+        "close": true
       }
     }
   ],
