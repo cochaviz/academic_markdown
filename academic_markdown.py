@@ -91,12 +91,12 @@ def _build_single(pandoc: list[str], source: str, filename: str, options: list[s
     if os.path.exists(metadata_file):
         options.append(f"--metadata-file={metadata_file}")
 
-    return subprocess.run([*pandoc, "-s", "-F", "pandoc-crossref", "--citeproc",
+    return subprocess.run([*pandoc, "-F", "pandoc-crossref", "--citeproc",
                     "--from=markdown+mark", *options, source, "-o", filename]) 
 
 def _build_folder(pandoc: list[str], source: str, filename: str, options: list[str]):
 
-    return subprocess.run([*pandoc, "-s", "-F", "pandoc-crossref", "--citeproc", 
+    return subprocess.run([*pandoc, "-F", "pandoc-crossref", "--citeproc", 
                            f"--metadata-file={source}/metadata.yaml", "--from=markdown+mark", 
                            *options, *glob.glob(f"{source}/*.md"), f"--output={filename}"])
 
@@ -127,6 +127,9 @@ def main(source: str, target: str,
 
     if not "md" in target and os.path.isfile(source):
         options.append("--shift-heading-level=-1")
+
+    if "tex" in target:
+        options.append("-s")
 
     # convert target to filename
     if "." in target:
