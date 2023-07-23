@@ -1,3 +1,7 @@
+---
+codeBlockCaptions: true
+---
+
 # Academic Markdown - Tools and Guide
 
 [![Open in Dev
@@ -66,26 +70,45 @@ this process _based on the currently opened file_. This is just a proxy
 for `academic_markdown.py`, and can also be run manually.
 
 In case you’d like to build manually, refer to the usage of
-`academic_markdown.py` in the command line:
+`academic_markdown.py` in the command line.
 
 ```txt
-$ python academic_markdown.py --help
-usage: build.py [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] [--log LOG] [--do-not-open] [--tectonic] source target
+$ python academic_markdown.py -h
+
+usage: academic_markdown.py [-h] {build,check-health} ...
 
 Wrapper for `pandoc` providing sensible defaults for rendering from pandoc-flavored markdown used in academic writing.
 
 positional arguments:
-  source             Source file or folder. In the case that the source is a single file, also mention the extension (your_file.md).
-  target             Target output file, or extension (pdf, md, tex, etc.). Uses pandoc under the hood, so refer to their documentation for the options.
+  {build,check-health}
+    build               Build document or set of documents through pandoc.
+    check-health        Check if all the necessary executables are available and properly configured
 
 options:
-  -h, --help         show this help message and exit
-  --options OPTIONS  Additional options to pass through to pandoc.
-  --pandoc PANDOC    Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the --docker option is set.
-  --docker           Use docker configuration to build, requires docker to be installed.
-  --log LOG          Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.
-  --do-not-open      Do not open output in default code.
-  --tectonic         Use tectonic when creating PDFs to install missing packages on the fly. Is ignored when docker is used.
+  -h, --help            show this help message and exit
+```
+
+Specifically, the `build` sub-command.
+
+```txt
+$ python academic_markdown.py build -h
+
+usage: academic_markdown.py build [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] [--check-health] [--verbosity {ERROR,WARNING,INFO,DEBUG}] [--do-not-open] [--tectonic] source target
+
+positional arguments:
+  source                Source file or folder. In the case that the source is a single file.
+  target                Target output file, or extension (pdf, md, tex, etc.). Uses pandoc under the hood, so refer to their documentation for the options.
+
+options:
+  -h, --help            show this help message and exit
+  --options OPTIONS     Additional options to pass through to pandoc.
+  --pandoc PANDOC       Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the --docker option is set.
+  --docker              Use docker configuration to build, requires docker to be installed.
+  --check-health        Check if dependencies are installed. If docker flag is set, it will only check whether docker requirement are met.
+  --verbosity {ERROR,WARNING,INFO,DEBUG}
+                        Set verbosity level. Default is WARNING.
+  --do-not-open         Do not open output in default code.
+  --tectonic            Use tectonic when creating PDFs to install missing packages on the fly. Is ignored when docker is used.
 ```
 
 For concrete example of how to use this, refer to the [VSCode
@@ -116,7 +139,7 @@ single final document to avoid one incredibly large document.
 ```
 
 : Setup with a single file. Since all the information can be found in one file
-(besides perhaps the bibliography), metadata.yaml is optional and frontmatter
+(besides perhaps the bibliography), `metadata.yaml` is optional and front matter
 can also be used. {#lst:single_file_setup}
 
 ```txt
@@ -171,7 +194,7 @@ while still allowing for personalization.
       for using a devcontainer both locally and in codespaces.
 
 - [ ] **Github Actions for building**. Use GitHub Actions to
-      automatically build to PDF/$\LaTeX$ according to user preferences.
+      automatically build to PDF, $\LaTeX$ according to user preferences.
       This could be useful for ensuring rendered documents are always
       up-to-date, and avoiding the necessity for local builds. Could,
       perhaps, also be faster than building locally and pushing.
