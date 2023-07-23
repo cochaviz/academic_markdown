@@ -37,7 +37,7 @@
     {
       "label": "Build document (Docker)",
       "type": "shell",
-      "dependsOn": ["docker-build"],
+      "dependsOn": ["Docker Build"],
       "command": "python3 ${workspaceFolder}/academic_markdown.py build --docker ${relativeFile} ${input:target}",
       "group": {
         "kind": "build",
@@ -102,20 +102,16 @@
     },
     {
       "label": "Docker Build",
-      "type": "docker-build",
-      "dockerBuild": {
-        "context": "${workspaceFolder}/.devcontainer",
-        "dockerfile": "${workspaceFolder}/.devcontainer/Dockerfile",
-        "tag": "cochaviz/academic_markdown",
-        "pull": true
-      },
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/build_docker.sh",
       "presentation": {
         "echo": true,
         "reveal": "silent",
         "focus": false,
-        "panel": "dedicated",
-        "close": true
-      }
+        "panel": "shared",
+        "showReuseMessage": true
+      },
+      "problemMatcher": []
     }
   ],
   "inputs": [

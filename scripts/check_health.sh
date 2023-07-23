@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PREAMBLE="academic_markdown(check_health.sh):"
+PREAMBLE="academic_markdown (check_health.sh):"
 HEALTH=0
 
 check_in_path() {
@@ -15,15 +15,21 @@ check_in_path() {
 
 check_docker() {
     check_in_path "docker"
-
     if [[ $? ]]; then
         echo "$PREAMBLE ℹ️ Running docker health check..."
 
-        docker run hello-world  
+        docker run hello-world
         if [[ $? ]]; then
             echo "$PREAMBLE ✅ Docker correctly configured"
         else
             echo "$PREAMBLE ⚠️ Docker does not seem to be configured correctly"
+            HEALTH=1
+        fi
+
+        if [[ $(docker images | grep cochaviz/academic_markdown) ]]; then
+            echo "$PREAMBLE ✅ Found 'cochaviz/academic_markdown' docker image"
+        else
+            echo "$PREAMBLE ⚠️ Could not find image 'cochaviz/academic_markdown'.\nPlease run the install script (scripts/build_docker.sh) or the corresponding VSCode Task."
             HEALTH=1
         fi
     else

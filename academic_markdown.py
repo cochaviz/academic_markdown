@@ -135,6 +135,7 @@ def main(source: str, target: str,
             "--from=markdown+mark",
             "--filter=pandoc-crossref",
             "--citeproc",
+            "--metadata=codeBlockCaptions"
         ]
 
         if len(source_files) > 1:
@@ -180,7 +181,7 @@ def main(source: str, target: str,
     ]
 
     pandoc_command_string = " ".join(pandoc_command)
-    logging.debug(f"main: Running pandoc command:\n\n{pandoc_command_string}")
+    logging.debug(f"main: Running pandoc command:\n====\n{pandoc_command_string}\n====")
 
     process = subprocess.run(pandoc_command) 
 

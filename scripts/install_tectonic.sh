@@ -7,7 +7,7 @@
 # other folder in the PATH variable if the .local/bin is not found.
 #
 
-PREAMBLE="academic_markdown(install_tectonic.sh):"
+PREAMBLE="academic_markdown (install_tectonic.sh):"
 
 curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
 

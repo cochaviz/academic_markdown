@@ -121,9 +121,9 @@ be set up similarly with any IDE.
 #### Project Structure
 
 I imagine two ways of writing which I have often encountered myself. The
-first, is a situation in which you only need to write a small report.
-The second is a situation where multiple files are required for that
-single final document to avoid one incredibly large document.
+first is a situation in which you only need to write a small report. The
+second is a situation where multiple files are required for that single
+final document to avoid one incredibly large document.
 
 <div id="lst:single_file_setup" class="listing txt">
 
@@ -169,6 +169,14 @@ are more files, the second situation is assumed, and `metadata.yaml` is
 required.
 
 #### Integration with VSCode
+
+- tasks
+
+- links
+
+- citations
+
+- previewing
 
 #### Other IDEs
 
