@@ -7,9 +7,30 @@ import yaml
 import re
 import subprocess
 import shutil
+import shlex
 
 import logging
 import glob
+
+def _open_file(filename: str):
+    # open file first by trying to open in VSCode, then with the
+    # default pdf reader. Not sure whether this should be the other way around
+
+    try:
+        subprocess.run(["code", filename], check=True)
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(["xdg-open", filename], check=True)
+        except subprocess.CalledProcessError:
+            logging.warning(f"Could not open {filename} using either 'code' or 'xdg-open'") 
+
+def _set_verbosity(level: str):
+    numeric_level = getattr(logging, level.upper(), "WARNING")
+
+    if not isinstance(numeric_level, int):
+        raise ValueError(f"Invalid log level: {level}")
+
+    logging.basicConfig(level=numeric_level)
 
 def _docker_in_container_warning(docker_option: bool) -> bool:
     if os.path.exists("/.dockerenv") and docker_option:
@@ -85,74 +106,84 @@ def check_in_path(dependencies: list[str]) -> None | list[str]:
             
     return missing
 
-def _build_single(pandoc: list[str], source: str, filename: str, options: list[str]):
-    metadata_file = f"{os.path.dirname(source)}/metadata.yaml"
-
-    if os.path.exists(metadata_file):
-        options.append(f"--metadata-file={metadata_file}")
-
-    return subprocess.run([*pandoc, "-F", "pandoc-crossref", "--citeproc",
-                    "--from=markdown+mark", *options, source, "-o", filename]) 
-
-def _build_folder(pandoc: list[str], source: str, filename: str, options: list[str]):
-
-    return subprocess.run([*pandoc, "-F", "pandoc-crossref", "--citeproc", 
-                           f"--metadata-file={source}/metadata.yaml", "--from=markdown+mark", 
-                           *options, *glob.glob(f"{source}/*.md"), f"--output={filename}"])
-
 def main(source: str, target: str, 
          options: str = "", docker: bool = False, 
          pandoc: str = "pandoc", tectonic: bool = False):
         
     if docker:
         _docker_in_container_warning(docker)
-        pwd = os.getcwd()
-        pandoc = ["docker", "run", "--mount", f"type=bind,source={pwd},target=/var/data", 
-                  "--workdir=/var/data", "cochaviz/academic_markdown"]
+        pandoc = shlex.split(f"docker run \
+            --mount type=bind,source={os.getcwd()},target=/var/data \
+            --workdir=/var/data \
+            cochaviz/academic_markdown")
     else:
-        pandoc = [pandoc]
+        pandoc = shlex.split(pandoc)
     
-    # set source to file if folder contains only one file
+    # source always refers to the folder which is being built
     if os.path.isdir(source):
-        markdown_in_folder = glob.glob(f"{source}/*.md")
-        
-        if len(markdown_in_folder) == 1:
-            source = markdown_in_folder[0]
-            logging.info(f"Only one file was found in given folder, \
-                updating source to {source}")
+        source_files = glob.glob(f"{source}/*.md")
+    else:
+        source = os.path.dirname(source)
+        source_files = [source]
+
+    # all resources should be located in the source folder
+    options.append(f"--resource-path={source}")
 
     # set options
-    if "md" in target:
-        options.append("--to=gfm")
+    if "tex" in source_files[0]:
+        logging.info("Using latex defaults")
+        options.append("--defaults=config/latex.yaml")
+    if "md" in source_files[0]:
+        options += [
+            "--from=markdown+mark",
+            "--filter=pandoc-crossref",
+            "--citeproc",
+        ]
 
-    if not "md" in target and os.path.isfile(source):
-        options.append("--shift-heading-level=-1")
+        if len(source_files) > 1:
+            options.append(f"--metadata-file={source}/metadata.yaml")
+        if len(source_files) == 1 and "md" not in target:
+            options.append(f"--shift-heading-level=-1")
+        if "md" in target:
+            options.append("--to=gfm")
+        if "tex" in target:
+            options.append("--standalone")
 
-    if "tex" in target:
-        options.append("-s")
+    # if docker is used, set tectonic option by default
+    if (tectonic or docker) and "pdf" in target:
+        options.append("--pdf-engine=tectonic")
 
-    # convert target to filename
+    # convert target to filename (if it isn't already)
     if "." in target:
         out_filename = target
     else:
         document_title = _get_metadata(source, "title")
 
         if document_title is not None:
-            out_filename = _title_to_filename(document_title) + f".{target}"
+            out_filename = f"{_title_to_filename(document_title)}.{target}"
         else:
-            out_filename = f"{os.path.splitext(os.path.basename(source))[0]}.{target}"
+            intermediate_filename = os.path.basename(
+                source if len(source_files) > 1 else source_files[0]
+                )
+            out_filename = f"{os.path.splitext(intermediate_filename)[0]}.{target}"
 
-    if tectonic or docker:
-        options.append("--pdf-engine=tectonic")
+    out_filename = f"{os.getcwd()}/{out_filename}"
 
     logging.info(f"Writing to {out_filename}...")
 
-    if os.path.isdir(source):
-        if _build_folder(pandoc, source, out_filename, options) != 0:
-            exit(1)
-    else:
-        if _build_single(pandoc, source, out_filename, options) != 0:
-            exit(1)
+    pandoc_command = [
+        *pandoc, *options, *source_files, 
+        f"--output={out_filename}"
+    ]
+
+    pandoc_command_string = " ".join(pandoc_command)
+    logging.debug(f"Running pandoc command:\n\n{pandoc_command_string}")
+
+    process = subprocess.run(pandoc_command) 
+
+    if process.returncode != 0:
+        logging.error(f"pandoc: Exited unexpectedly: {process.stderr}")
+        exit(process.returncode)
 
     return out_filename
 
@@ -161,29 +192,29 @@ if __name__=="__main__":
                                      """Wrapper for `pandoc` providing sensible
                                      defaults for rendering from pandoc-flavored
                                      markdown used in academic writing.""") 
-    parser.add_argument("source", help=
-                        """Source file or folder. In the case that the source is
-                        a single file, also mention the extension
-                        (your_file.md).""") 
-    parser.add_argument("target", help="""
-                        Target output file, or extension (pdf, md, tex, etc.). Uses
+    parser.add_argument("source", 
+                        help="""Source file or folder. In the case that the source is
+                        a single file.""") 
+    parser.add_argument("target", 
+                        help="""Target output file, or extension (pdf, md, tex, etc.). Uses
                         pandoc under the hood, so refer to their documentation
                         for the options.""")
-    parser.add_argument("--options", default="", type=list[str], help=
-                        """Additional options to pass through to pandoc.""")
-    parser.add_argument("--pandoc", default="pandoc", type=str, help=
-                        """Path to pandoc in case it cannot be provided through the
+    parser.add_argument("--options", default="", type=list[str], 
+                        help="""Additional options to pass through to pandoc.""")
+    parser.add_argument("--pandoc", default="pandoc", type=str, 
+                        help="""Path to pandoc in case it cannot be provided through the
                         PATH variable. Gets overridden if the --docker option is
                         set.""")
-    parser.add_argument("--docker", action="store_true", help=
-                        """Use docker configuration to build, requires docker to
+    parser.add_argument("--docker", action="store_true", 
+                        help="""Use docker configuration to build, requires docker to
                         be installed.""")
-    parser.add_argument("--log", type=str, help=
-                        """Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.""")
-    parser.add_argument("--do-not-open", action="store_true", help=
-                        """Do not open output in default code.""")
-    parser.add_argument("--tectonic", action="store_true", help=
-                        """Use tectonic when creating PDFs to install
+    parser.add_argument("--verbosity", type=str, choices=["ERROR", "WARNING", "INFO", "DEBUG"], 
+                        default="WARNING",
+                        help="""Set verbosity level. Default is WARNING.""")
+    parser.add_argument("--do-not-open", action="store_true", 
+                        help="""Do not open output in default code.""")
+    parser.add_argument("--tectonic", action="store_true", 
+                        help="""Use tectonic when creating PDFs to install
                         missing packages on the fly. Is ignored when docker is
                         used.""")
     
@@ -207,14 +238,8 @@ if __name__=="__main__":
                 Please ensure they are all in the PATH.")
             exit(1)
 
-    # enabling logging
-    if args.log:
-        numeric_level = getattr(logging, args.log.upper(), "WARNING")
-
-        if not isinstance(numeric_level, int):
-            raise ValueError(f"Invalid log level: {args.log}")
-
-        logging.basicConfig(level=numeric_level)
+    # set verbosity level
+    _set_verbosity(args.verbosity)
 
     logging.debug("Debugging 🤓")
 
@@ -225,14 +250,5 @@ if __name__=="__main__":
         tectonic=args.tectonic
     )
 
-    # open created file first by trying to open in VSCode, then with the
-    # default pdf reader. Not sure whether this should be the other way around
     if not args.do_not_open:
-        try:
-            subprocess.run(["code", out_filename])
-        except FileNotFoundError:
-            try:
-                subprocess.run(["xdg-open", out_filename])
-            except FileNotFoundError:
-                logging.warning(f"Could not open {out_filename} using either 'code' or 'xdg-open'") 
-                exit(0)
+        _open_file(out_filename)
