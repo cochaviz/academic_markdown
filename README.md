@@ -7,7 +7,7 @@ ccsTemplate: $$i$$$$ccsLabelSep$$$$t$$
 chapDelim: .
 chapters: false
 chaptersDepth: 1
-codeBlockCaptions: false
+codeBlockCaptions: true
 cref: false
 crossrefYaml: pandoc-crossref.yaml
 eqLabels: arabic
@@ -202,9 +202,13 @@ first, is a situation in which you only need to write a small report.
 The second is a situation where multiple files are required for that
 single final document to avoid one incredibly large document.
 
-``` txt
-Setup with single file
+<div id="lst:single_file_setup" class="listing txt">
 
+Listing 1: Setup with a single file. Since all the information can be
+found in one file (besides perhaps the bibliography), metadata.yaml is
+optional and frontmatter can also be used.
+
+``` txt
 ├── academic_markdown.py
 └── docs
     ├── my_report.md
@@ -213,13 +217,16 @@ Setup with single file
     └── [metadata.yaml] // optional, preferrably use frontmatter
 ```
 
-: The first situation. Since all the information can be found in one
-file (besides perhaps the bibliography), `metadata.yaml` is optional and
-frontmatter can also be used. {#lst:single_file_setup}
+</div>
+
+<div id="lst:multiple_file_setup" class="listing txt">
+
+Listing 2: Setup with multiple files. Here, `pandoc` would use the
+frontmatter of the first document, if available, but I think the
+`metadata.yaml` should be provided. This separates configurations from
+content in larger projects.
 
 ``` txt
-Setup with multiple files
-
 ├── academic_markdown.py
 └── docs
     ├── 01_introduction.md
@@ -230,10 +237,7 @@ Setup with multiple files
     └── metadata.yaml
 ```
 
-: The second situation. Here, `pandoc` would use the frontmatter of the
-first document, if available, but I think the `metadata.yaml` should be
-provided. This separates configurations from content in larger projects.
-{#lst:multiple_file_setup}
+</div>
 
 When using `academic_markdown.py`, these situations are determined by
 the number of files in the target folder. When there is only one, the

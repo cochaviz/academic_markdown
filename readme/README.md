@@ -1,3 +1,7 @@
+---
+codeBlockCaptions: true
+---
+
 # Academic Markdown - Tools and Guide
 
 [![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown)
@@ -103,8 +107,6 @@ situation where multiple files are required for that single final document to
 avoid one incredibly large document.
 
 ```txt
-Setup with single file
-
 ├── academic_markdown.py
 └── docs
     ├── my_report.md
@@ -113,13 +115,11 @@ Setup with single file
     └── [metadata.yaml] // optional, preferrably use frontmatter
 ```
 
-: The first situation. Since all the information can be found in one file
-(besides perhaps the bibliography), `metadata.yaml` is optional and frontmatter
+: Setup with a single file. Since all the information can be found in one file
+(besides perhaps the bibliography), metadata.yaml is optional and frontmatter
 can also be used. {#lst:single_file_setup}
 
 ```txt
-Setup with multiple files
-
 ├── academic_markdown.py
 └── docs
     ├── 01_introduction.md
@@ -130,9 +130,10 @@ Setup with multiple files
     └── metadata.yaml
 ```
 
-: The second situation. Here, `pandoc` would use the frontmatter of the first
-document, if available, but I think the `metadata.yaml` should be provided. This
-separates configurations from content in larger projects. {#lst:multiple_file_setup}
+: Setup with multiple files. Here, `pandoc` would use the frontmatter of the
+first document, if available, but I think the `metadata.yaml` should be
+provided. This separates configurations from content in larger projects.
+{#lst:multiple_file_setup}
 
 When using `academic_markdown.py`, these situations are determined by the number
 of files in the target folder. When there is only one, the first situation is
