@@ -1,130 +1,227 @@
+---
+autoEqnLabels: false
+autoSectionLabels: false
+ccsDelim: ", "
+ccsLabelSep:  —
+ccsTemplate: $$i$$$$ccsLabelSep$$$$t$$
+chapDelim: .
+chapters: false
+chaptersDepth: 1
+codeBlockCaptions: false
+cref: false
+crossrefYaml: pandoc-crossref.yaml
+eqLabels: arabic
+eqnBlockInlineMath: false
+eqnBlockTemplate: |
+  <table>
+  <colgroup>
+  <col style="width: 90%" />
+  <col style="width: 10%" />
+  </colgroup>
+  <tbody>
+  <tr class="odd">
+  <td style="text-align: center;"><span
+  class="math display"><em>t</em></span></td>
+  <td style="text-align: right;"><span
+  class="math display"><em>i</em></span></td>
+  </tr>
+  </tbody>
+  </table>
+eqnIndexTemplate: ($$i$$)
+eqnInlineTemplate: $$e$$$$equationNumberTeX$${$$i$$}
+eqnPrefix:
+- eq.
+- eqns.
+eqnPrefixTemplate: $$p$$ $$i$$
+equationNumberTeX: \qquad
+figLabels: arabic
+figPrefix:
+- fig.
+- figs.
+figPrefixTemplate: $$p$$ $$i$$
+figureTemplate: $$figureTitle$$ $$i$$$$titleDelim$$ $$t$$
+figureTitle: Figure
+lastDelim: ", "
+linkReferences: false
+listings: false
+listingTemplate: $$listingTitle$$ $$i$$$$titleDelim$$ $$t$$
+listingTitle: Listing
+listItemTitleDelim: .
+lofItemTemplate: |
+  $$lofItemTitle$$$$i$$$$listItemTitleDelim$$ $$t$$  
+lofTitle: |
+  # List of Figures
+lolItemTemplate: |
+  $$lolItemTitle$$$$i$$$$listItemTitleDelim$$ $$t$$  
+lolTitle: |
+  # List of Listings
+lotItemTemplate: |
+  $$lotItemTitle$$$$i$$$$listItemTitleDelim$$ $$t$$  
+lotTitle: |
+  # List of Tables
+lstLabels: arabic
+lstPrefix:
+- lst.
+- lsts.
+lstPrefixTemplate: $$p$$ $$i$$
+nameInLink: false
+numberSections: false
+pairDelim: ", "
+rangeDelim: "-"
+refDelim: ", "
+refIndexTemplate: $$i$$$$suf$$
+secHeaderDelim: 
+secHeaderTemplate: $$i$$$$secHeaderDelim[n]$$$$t$$
+secLabels: arabic
+secPrefix:
+- sec.
+- secs.
+secPrefixTemplate: $$p$$ $$i$$
+sectionsDepth: 0
+subfigGrid: false
+subfigLabels: alpha a
+subfigureChildTemplate: $$i$$
+subfigureRefIndexTemplate: $$i$$$$suf$$ ($$s$$)
+subfigureTemplate: $$figureTitle$$ $$i$$$$titleDelim$$ $$t$$. $$ccs$$
+tableEqns: false
+tableTemplate: $$tableTitle$$ $$i$$$$titleDelim$$ $$t$$
+tableTitle: Table
+tblLabels: arabic
+tblPrefix:
+- tbl.
+- tbls.
+tblPrefixTemplate: $$p$$ $$i$$
+titleDelim: ":"
+---
+
 # Academic Markdown - Tools and Guide
 
-[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown)
+[![Open in Dev
+Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown)
 
-This repository contains my workflow for using markdown and pandoc for academic
-writing and serves as a template for that workflow. If you're just looking to
-try it out, press the green button that says _Use This Template_ and open it in
-a codespace. Otherwise, continue reading to set up a more permanent version of
-this environment.
+This repository contains my workflow for using markdown and `pandoc` for
+academic writing and serves as a template for that workflow. If you’re
+just looking to try it out, press the green button that says *Use This
+Template* and open it in a codespace. Otherwise, continue reading to set
+up a more permanent version of this environment.
 
-In this README, you will find instructions on how to use `build.py` and the
-provided `Dockerfile`. That is, how to set up your system to successfully build
-markdown files to `pdf`, $\LaTeX$, `HTML`, and markdown (that is
-Github-flavoured markdown with rendered citations).
+In this README, you will find instructions on how to use `build.py` and
+the provided `Dockerfile`. That is, how to set up your system to
+successfully build markdown files to `pdf`, $\LaTeX$, `HTML`, and
+markdown (that is Github-flavoured markdown with rendered citations).
 
-In _Workflow_, I will show how I use this repository and VSCode in conjunction
-with Zotero to write articles, surveys, etc. This is available in both
-[pdf](./academic_markdown.pdf) and [markdown](./academic_markdown.md) format, of
-which the source can be found in `src/`.
-
-## Quick Start
-
-To start, you can choose to:
-
-- [Use the provided Dockerfile](https://www.docker.com/) to set up a Docker
-  container
-
-- Install the required dependencies ([Python (3.11)](https://www.python.org/),
-  [`pandoc`](https://pandoc.org/),
-  [`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
-  [LaTeX](https://www.latex-project.or/)) yourself
-
-- Open this template in a Github codespace (green button in the top-right of the
-  repository)
-
-- [Open locally in a VSCode
-  devcontainer](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown).
-
-If you are on Github, using codespaces is definitely the easiest if you'd just
-like to have a look around.
-
-### Building
-
-When using VSCode, there are [Build
-tasks](https://code.visualstudio.com/Docs/editor/tasks) that can be run to build
-the files according to the current folder structure. This is just a proxy for
-`build.py`, and can also be run manually.
-
-In case you'd like to build manually, refer to the usage of `build.py` in the
-command line:
-
-```txt
-$ ./build.py -h
-usage: build.py [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] source target
-
-Wrapper for `pandoc` providing sensible defaults for rendering from pandoc-flavored markdown used in academic writing.
-
-positional arguments:
-  source             Source file or folder. In the case that the source is a single file, also mention the extension
-                     (your_file.md).
-  target             Target output file, or extension (pdf, md, tex, etc.). Uses pandoc under the hood, so refer to their
-                     documentation for the options. This build file has preselected options for markdown, LaTeX, and PDF
-                     files.
-
-options:
-  -h, --help         show this help message and exit
-  --options OPTIONS  Additional options to pass through to pandoc.
-  --pandoc PANDOC    Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the
-                     --docker option is set.
-  --docker           Use docker configuration to build, requires docker to be installed.
-```
+In *Workflow*, I will show how I use this repository and VSCode in
+conjunction with Zotero to write articles, surveys, etc. This is
+available in both [pdf](./academic_markdown.pdf) and
+[markdown](./academic_markdown.md) format, of which the source can be
+found in `src/`.
 
 ## Capabilities
 
 For my writing, I wanted to be able to do the following things:
 
-- Work locally (preferably VSCode)
-- Reference citations from a `.bib` file
-- Use figures with captions
-- Use common journal $\LaTeX$ templates
-- Export to $\LaTeX$, `markdown`, and pdf
+- Work locally (preferably VSCode).
+- Write academic papers and reports (e.g. work with Zotero and create
+  figures).
+- Create $\LaTeX$, `markdown`, and pdf files.
+- Focus on writing, not on markup.
 
-This repository is my attempt at making an academic writing workflow that is as
-frictionless as possible without losing the configurability provided by the used
-tools.
+My conclusion was that writing in markdown and using `pandoc` to export
+was the way to go. This repository is my attempt at making a workflow
+that satisfies these conditions. Furthermore, I hope to provide a
+foundation for people to start exploring all these amazing tools that
+are available *for free*.
 
-## Motivation
+## Quick Start
 
-My philosophy is as follows: Markdown is a great format to write in but lacks
-configurability. $\LaTeX$ is great for configurability, but rather hard to write
-in (updates take quite a while to render, and the syntax is sometimes rather
-distracting). One should focus on writing first, and then make small adjustments
-where necessary. For this reason, I first write in Markdown and then convert to
-PDF through $\LaTeX$. In case I would like to customize certain aspects of the
-exported file, I export to $\LaTeX$ and then to pdf.
+To start, you can choose to:
 
-While all of this is supported by `pandoc`, finding a system to work with this
-is not necessarily trivial. This repository should provide everything necessary
-to make the above workflow as smooth as possible while still allowing for
-personalization.
+- [Use the provided Dockerfile](https://www.docker.com/) to create a
+  container in which the files are built (use the `--docker` flag).
 
-## Project Setup
+- Install the required dependencies ([Python
+  (3.11)](https://www.python.org/), [`pandoc`](https://pandoc.org/),
+  [`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
+  [LaTeX](https://www.latex-project.or/)) yourself.
 
-In this repository, I assume two types of document writing. Either by writing in
-a single markdown file (for example a small report) or decomposing sections in
-markdown separate files. The way in which these are detected is by providing a
-front matter in the single markdown file or `metadata.yaml` file respectively.
+- Open this template in a Github codespace (green button in the
+  top-right of the repository).
 
-```txt
-Setup with single file
+- Open locally in a VSCode
+  [devcontainer](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown).
 
-├── build.py
-├── Dockerfile
-├── README.md
-└── src
-    ├── my_report.md
-    ├── bibliography.bib
-    └── images
+If you are on Github, using codespaces is definitely the easiest if
+you’d just like to have a look around. Be aware that this might take a
+while to set up (about 2 minutes), but only needs to be done once.
+
+### Building
+
+When using VSCode, there are [Build
+tasks](https://code.visualstudio.com/Docs/editor/tasks) that automate
+this process *based on the currently opened file*. This is just a proxy
+for `academic_markdown.py`, and can also be run manually.
+
+In case you’d like to build manually, refer to the usage of
+`academic_markdown.py` in the command line:
+
+``` txt
+$ python academic_markdown.py --help
+usage: build.py [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] [--log LOG] [--do-not-open] [--tectonic] source target
+
+Wrapper for `pandoc` providing sensible defaults for rendering from pandoc-flavored markdown used in academic writing.
+
+positional arguments:
+  source             Source file or folder. In the case that the source is a single file, also mention the extension (your_file.md).
+  target             Target output file, or extension (pdf, md, tex, etc.). Uses pandoc under the hood, so refer to their documentation for the options.
+
+options:
+  -h, --help         show this help message and exit
+  --options OPTIONS  Additional options to pass through to pandoc.
+  --pandoc PANDOC    Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the --docker option is set.
+  --docker           Use docker configuration to build, requires docker to be installed.
+  --log LOG          Log level (ERROR, WARNING, INFO, DEBUG). Default is WARNING.
+  --do-not-open      Do not open output in default code.
+  --tectonic         Use tectonic when creating PDFs to install missing packages on the fly. Is ignored when docker is used.
 ```
 
-```txt
+For concrete example of how to use this, refer to the [VSCode
+tasks](.vscode/tasks.json). Each of these tasks provides a different
+example of how to use the script.
+
+### Usage
+
+Personally, I work a lot in VSCode meaning that this workflow is
+optimized for use with that IDE in particular. All the required files
+and instructions, however, are available in such a manner that this can
+be set up similarly with any IDE.
+
+#### Project Structure
+
+I imagine two ways of writing which I have often encountered myself. The
+first, is a situation in which you only need to write a small report.
+The second is a situation where multiple files are required for that
+single final document to avoid one incredibly large document.
+
+``` txt
+Setup with single file
+
+├── academic_markdown.py
+└── docs
+    ├── my_report.md
+    ├── bibliography.bib
+    ├── images
+    └── [metadata.yaml] // optional, preferrably use frontmatter
+```
+
+: The first situation. Since all the information can be found in one
+file (besides perhaps the bibliography), `metadata.yaml` is optional and
+frontmatter can also be used. {#lst:single_file_setup}
+
+``` txt
 Setup with multiple files
 
-├── build.py
-├── Dockerfile
-├── README.md
-└── src
+├── academic_markdown.py
+└── docs
     ├── 01_introduction.md
     ├── 02_methodology.md
     ├── 03_conclusion.md
@@ -133,58 +230,58 @@ Setup with multiple files
     └── metadata.yaml
 ```
 
-## Examples
+: The second situation. Here, `pandoc` would use the frontmatter of the
+first document, if available, but I think the `metadata.yaml` should be
+provided. This separates configurations from content in larger projects.
+{#lst:multiple_file_setup}
 
-Some examples to show how I imagine you might want to work with this tool.
+When using `academic_markdown.py`, these situations are determined by
+the number of files in the target folder. When there is only one, the
+first situation is assumed, and `metadata.yaml` is optional. When there
+are more files, the second situation is assumed, and `metadata.yaml` is
+required.
 
-### Building this README
+#### Integration with VSCode
 
-```bash
-python3 build.py README.md pdf
-```
+#### Other IDEs
 
-### Building a Single File to PDF
+## Motivation
 
-```bash
-python3 build.py single pdf
-```
+My reasoning is as follows: Markdown is a great format to write in but
+lacks configurability. $\LaTeX$ is great for configurability, but rather
+hard to write in (updates take quite a while to render, and the syntax
+is sometimes rather distracting). One should focus on writing first, and
+then make small adjustments where necessary. For this reason, I first
+write in Markdown and then convert to PDF through $\LaTeX$. In case I
+would like to customize certain aspects of the exported file, I export
+to $\LaTeX$ and then to pdf.
 
-### Building Multiple Files to Markdown
-
-```bash
-python3 build.py multiple md
-```
-
-### Building a Single File from Multiple to PDF
-
-```bash
-python3 build.py multiple/01_introduction.md pdf
-```
-
-Front-matter metadata defined in `multiple/01_introduction.md` will overwrite
-`multiple/metadata.yaml`.
+While all of this is supported by `pandoc`, finding a system to work
+with this is not necessarily trivial. This repository should provide
+everything necessary to make the above workflow as smooth as possible
+while still allowing for personalization.
 
 ## Roadmap
 
-- [x] **Dockerized Environment**. Lightweight dockerized environment that allows
-      for a full replacement of `pandoc`. Also automatically downloads missing
-      latex
-      packages.
+- [x] **Dockerized Environment**. Lightweight dockerized environment
+  that allows for a full replacement of `pandoc`. Also automatically
+  downloads missing latex packages.
 
-- [ ] **Full Manual**. A complete and detailed explanation of how this workflow
-      can be used. This should be an instruction for any person that would like
-      to use markdown for serious writing. It should provide an introduction to
-      `pandoc`, docker, and VSCode.
+- [ ] **Predefined devcontainer**. This will prevent long waiting times
+  for using a devcontainer both locally and in codespaces.
 
-- [ ] **Predefined devcontainer**. This will prevent long waiting times for using
-      a devcontainer both locally and in codespaces.
+- [ ] **Github Actions for building**. Use GitHub Actions to
+  automatically build to PDF/$\LaTeX$ according to user preferences.
+  This could be useful for ensuring rendered documents are always
+  up-to-date, and avoiding the necessity for local builds. Could,
+  perhaps, also be faster than building locally and pushing.
 
-- [ ] **Github Actions for building**. Use GitHub Actions to automatically
-      build to PDF/$\LaTeX$ according to user preferences. This could be useful
-      for ensuring rendered documents are always up-to-date, and avoiding the
-      necessity for local builds. Could, perhaps, also be faster than building
-      locally and pushing.
+- [ ] **Full Manual**. A complete and detailed explanation of how this
+  workflow can be used. This should be an instruction for any person
+  that would like to use markdown for serious writing. It should provide
+  an introduction to `pandoc`, docker, and VSCode.
 
-- [ ] **Independent VSCode Extension**. A VSCode extension, independent of
-      `build.py`. This could be an improved user experience for existing VSCode
-      users. This template should, however, still be as usable without VSCode.
+- [ ] **Independent VSCode Extension**. A VSCode extension, independent
+  of `build.py`. This could be an improved user experience for existing
+  VSCode users. This template should, however, still be as usable
+  without VSCode.

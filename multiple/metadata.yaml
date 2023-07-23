@@ -1,7 +1,0 @@
-title: Academic Markdown - A Guide
-author: Zohar Cochavi
-
-bibliography: 
- - multiple/bibliography.bib
-
-documentclass: amsart

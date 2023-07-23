@@ -4,7 +4,6 @@ import argparse
 import os
 import io
 import yaml
-import distutils.spawn
 import re
 import subprocess
 import shutil
@@ -166,8 +165,7 @@ if __name__=="__main__":
     parser.add_argument("target", help="""
                         Target output file, or extension (pdf, md, tex, etc.). Uses
                         pandoc under the hood, so refer to their documentation
-                        for the options. This build file has preselected options
-                        for markdown, LaTeX, and PDF files.""")
+                        for the options.""")
     parser.add_argument("--options", default="", type=list[str], help=
                         """Additional options to pass through to pandoc.""")
     parser.add_argument("--pandoc", default="pandoc", type=str, help=
