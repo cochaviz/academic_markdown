@@ -113,6 +113,12 @@ def main(source: str, target: str,
     # source always refers to the folder which is being built
     if os.path.isdir(source):
         source_files = glob.glob(f"{source}/*.md")
+
+        # if no files found, we cannot convert
+        if len(source_files) == 0:
+            logging.critical(f"main: No markdown files can be found in directory '{source}/'.\
+                \nEither declare the specific file you want to convert, or select a different folder.")
+            exit(1)
     else:
         source = os.path.dirname(source)
         source_files = [source]
@@ -124,7 +130,7 @@ def main(source: str, target: str,
     if "tex" in source_files[0]:
         logging.info("Using latex defaults")
         options.append("--defaults=config/latex.yaml")
-    if "md" in source_files[0]:
+    elif "md" in source_files[0]:
         options += [
             "--from=markdown+mark",
             "--filter=pandoc-crossref",
@@ -139,6 +145,12 @@ def main(source: str, target: str,
             options.append("--to=gfm")
         if "tex" in target:
             options.append("--standalone")
+    else:
+        logging.error("It seems like you are trying to convert a non-(latex|markdown) file.")
+
+        if not input("Are you sure you want to do this? [y/N]:").lower() in {"y", "yes"}:
+            logging.warning("Not processing further, exiting...")
+            exit(0)
 
     # if docker is used, set tectonic option by default
     if (tectonic or docker) and "pdf" in target:
@@ -168,12 +180,12 @@ def main(source: str, target: str,
     ]
 
     pandoc_command_string = " ".join(pandoc_command)
-    logging.debug(f"Running pandoc command:\n\n{pandoc_command_string}")
+    logging.debug(f"main: Running pandoc command:\n\n{pandoc_command_string}")
 
     process = subprocess.run(pandoc_command) 
 
     if process.returncode != 0:
-        logging.error(f"pandoc: Exited unexpectedly: {process.stderr}")
+        logging.critical(f"pandoc: Exited unexpectedly.")
         exit(process.returncode)
 
     return out_filename
@@ -207,12 +219,14 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(prog="academic_markdown.py", description=
                                      """Wrapper for `pandoc` providing sensible
                                      defaults for rendering from pandoc-flavored
-                                     markdown used in academic writing.""") 
+                                     markdown used in academic writing. Also
+                                     performs other features related to writing and
+                                     configuring""") 
 
-    commands = parser.add_subparsers(required=True)
+    commands = parser.add_subparsers(required=True, title="subcommands")
 
     # all build command options
-    build_command = commands.add_parser("build", help="Build document or set of documents through pandoc.")
+    build_command = commands.add_parser("build", description="Build document or set of documents through pandoc.")
     build_command.add_argument("source", 
                         help="""Source file or folder. In the case that the source is
                              a single file.""") 
@@ -246,10 +260,10 @@ if __name__=="__main__":
 
     # 
     check_health_command = commands.add_parser("check-health", 
-                                      help="""Check if all the necessary
-                                           executables are available and properly configured""")
-    check_health_command.add_argument("--docker", 
-                                      help="""Only check Docker setup""")
+                                      description="""Check if all the necessary
+                                           executables are available and properly configured.""")
+    check_health_command.add_argument("--docker", action="store_true",
+                                      help="""Check Docker setup""")
     check_health_command.set_defaults(command=check_health)
 
     
