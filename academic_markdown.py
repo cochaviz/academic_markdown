@@ -97,15 +97,6 @@ def _title_to_filename(title: str):
 
     return filename
 
-def check_in_path(dependencies: list[str]) -> None | list[str]:
-    missing = []
-
-    for dependency in dependencies:
-            if shutil.which(dependency) is None:
-                missing.append(dependency)
-            
-    return missing
-
 def main(source: str, target: str, 
          options: str = "", docker: bool = False, 
          pandoc: str = "pandoc", tectonic: bool = False):
@@ -187,57 +178,7 @@ def main(source: str, target: str,
 
     return out_filename
 
-if __name__=="__main__":
-    parser = argparse.ArgumentParser(prog="build.py", description=
-                                     """Wrapper for `pandoc` providing sensible
-                                     defaults for rendering from pandoc-flavored
-                                     markdown used in academic writing.""") 
-    parser.add_argument("source", 
-                        help="""Source file or folder. In the case that the source is
-                        a single file.""") 
-    parser.add_argument("target", 
-                        help="""Target output file, or extension (pdf, md, tex, etc.). Uses
-                        pandoc under the hood, so refer to their documentation
-                        for the options.""")
-    parser.add_argument("--options", default="", type=list[str], 
-                        help="""Additional options to pass through to pandoc.""")
-    parser.add_argument("--pandoc", default="pandoc", type=str, 
-                        help="""Path to pandoc in case it cannot be provided through the
-                        PATH variable. Gets overridden if the --docker option is
-                        set.""")
-    parser.add_argument("--docker", action="store_true", 
-                        help="""Use docker configuration to build, requires docker to
-                        be installed.""")
-    parser.add_argument("--verbosity", type=str, choices=["ERROR", "WARNING", "INFO", "DEBUG"], 
-                        default="WARNING",
-                        help="""Set verbosity level. Default is WARNING.""")
-    parser.add_argument("--do-not-open", action="store_true", 
-                        help="""Do not open output in default code.""")
-    parser.add_argument("--tectonic", action="store_true", 
-                        help="""Use tectonic when creating PDFs to install
-                        missing packages on the fly. Is ignored when docker is
-                        used.""")
-    
-    args = parser.parse_args()
-
-    # not using docker means we have to check dependencies
-    if not args.docker:
-        dependencies = [
-            args.pandoc,
-            "pandoc-crossref",
-            "pdflatex",
-        ]
-
-        if args.tectonic:
-            dependencies.append("tectonic")
-
-        missing = check_in_path(dependencies)
-
-        if len(missing) != 0:
-            logging.critical(f"Not all dependencies could be found: {missing}. \
-                Please ensure they are all in the PATH.")
-            exit(1)
-
+def build(args):
     # set verbosity level
     _set_verbosity(args.verbosity)
 
@@ -252,3 +193,65 @@ if __name__=="__main__":
 
     if not args.do_not_open:
         _open_file(out_filename)
+
+def check_health(args):
+    # just check health
+    health_check = ["./scripts/check_health.sh"]
+
+    if args.docker:
+        health_check.append("--docker") 
+
+    exit(subprocess.run(health_check).returncode)
+
+if __name__=="__main__":
+    parser = argparse.ArgumentParser(prog="academic_markdown.py", description=
+                                     """Wrapper for `pandoc` providing sensible
+                                     defaults for rendering from pandoc-flavored
+                                     markdown used in academic writing.""") 
+
+    commands = parser.add_subparsers(required=True)
+
+    # all build command options
+    build_command = commands.add_parser("build", help="Build document or set of documents through pandoc.")
+    build_command.add_argument("source", 
+                        help="""Source file or folder. In the case that the source is
+                             a single file.""") 
+    build_command.add_argument("target", 
+                        help="""Target output file, or extension (pdf, md, tex, etc.). Uses
+                             pandoc under the hood, so refer to their documentation
+                             for the options.""")
+    build_command.add_argument("--options", default="", type=list[str], 
+                        help="""Additional options to pass through to pandoc.""")
+    build_command.add_argument("--pandoc", default="pandoc", type=str, 
+                        help="""Path to pandoc in case it cannot be provided through the
+                             PATH variable. Gets overridden if the --docker option is
+                             set.""")
+    build_command.add_argument("--docker", action="store_true", 
+                        help="""Use docker configuration to build, requires docker to
+                             be installed.""")
+    build_command.add_argument("--check-health", action="store_true",
+                        help="""Check if dependencies are installed. If docker
+                             flag is set, it will only check whether docker
+                             requirement are met.""")
+    build_command.add_argument("--verbosity", type=str, choices=["ERROR", "WARNING", "INFO", "DEBUG"], 
+                        default="WARNING",
+                        help="""Set verbosity level. Default is WARNING.""")
+    build_command.add_argument("--do-not-open", action="store_true", 
+                        help="""Do not open output in default code.""")
+    build_command.add_argument("--tectonic", action="store_true", 
+                        help="""Use tectonic when creating PDFs to install
+                             missing packages on the fly. Is ignored when docker is
+                             used.""")
+    build_command.set_defaults(command=build)
+
+    # 
+    check_health_command = commands.add_parser("check-health", 
+                                      help="""Check if all the necessary
+                                           executables are available and properly configured""")
+    check_health_command.add_argument("--docker", 
+                                      help="""Only check Docker setup""")
+    check_health_command.set_defaults(command=check_health)
+
+    
+    args = parser.parse_args()
+    args.command(args)
