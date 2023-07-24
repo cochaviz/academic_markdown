@@ -13,11 +13,11 @@ PREAMBLE="academic_markdown (build_docker.sh):"
 
 # if container is installed, its fine
 if [[ $(docker image ls | grep cochaviz/academic_markdown) ]]; then
-    echo "$PREAMBLE Found docker image (cochaviz/academic_markdown), skipping build..."
-
     if ! [[ $1 = "-f" ]]; then
+        echo "$PREAMBLE Found docker image (cochaviz/academic_markdown), skipping build..."
         exit 0
     fi
+    shift
 fi
 
-docker build -t cochaviz/academic_markdown .devcontainer/
+docker build -t cochaviz/academic_markdown $@ .devcontainer/
