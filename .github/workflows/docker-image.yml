@@ -22,4 +22,4 @@ jobs:
           dockerfile: .devcontainer/Dockerfile
           directory: .devcontainer/
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
