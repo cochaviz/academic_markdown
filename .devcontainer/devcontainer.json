@@ -1,20 +1,30 @@
 {
+  "name": "Academic Markdown",
   "image": "docker.io/zoharcochavi/academic-markdown",
   "customizations": {
     "vscode": {
       "extensions": [
+        // markdown linting and citing
         "yzhang.markdown-all-in-one",
-        "bierner.markdown-preview-github-styles",
         "DavidAnson.vscode-markdownlint",
+        "goessner.mdmath",
         "notZaki.pandocciter",
+        // writing aids
         "streetsidesoftware.code-spell-checker",
-        "tomoki1207.vscode-pdf"
+        "znck.grammarly",
+        "stkb.rewrap",
+        "ms-vscode.wordcount",
+        // previewing
+        "bierner.github-markdown-preview",
+        "tomoki1207.vscode-pdf",
+        // latex utilities
+        "James-Yu.latex-workshop"
       ]
     }
   },
   "remoteEnv": {
     "useTectonic": "--tectonic"
   },
-  "postCreateCommand": "pip3 install -r .devcontainer/requirements.txt",
-  "remoteUser": "markdown-warrior"
+  "remoteUser": "markdown-warrior",
+  "postCreateCommand": "pip3 install -r .devcontainer/requirements.txt"
 }
