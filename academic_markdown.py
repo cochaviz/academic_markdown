@@ -179,7 +179,7 @@ def main(source: str, target: str,
     ]
 
     pandoc_command_string = " ".join(pandoc_command)
-    logging.debug(f"main: Running pandoc command:\n====\n{pandoc_command_string}\n====")
+    logging.debug(f"main: Running pandoc command:\n----\n{pandoc_command_string}\n----")
 
     process = subprocess.run(pandoc_command) 
 
@@ -190,7 +190,6 @@ def main(source: str, target: str,
     return out_filename
 
 def build(args):
-    # set verbosity level
     _set_verbosity(args.verbosity)
 
     logging.debug("Debugging 🤓")
@@ -224,7 +223,7 @@ if __name__=="__main__":
 
     commands = parser.add_subparsers(required=True, title="subcommands")
 
-    # all build command options
+    # build
     build_command = commands.add_parser("build", description="Build document or set of documents through pandoc.")
     build_command.add_argument("source", 
                         help="""Source file or folder. In the case that the source is
@@ -257,7 +256,7 @@ if __name__=="__main__":
                              used.""")
     build_command.set_defaults(command=build)
 
-    # 
+    # check health
     check_health_command = commands.add_parser("check-health", 
                                       description="""Check if all the necessary
                                            executables are available and properly configured.""")
@@ -265,6 +264,6 @@ if __name__=="__main__":
                                       help="""Check Docker setup""")
     check_health_command.set_defaults(command=check_health)
 
-    
+    # execute 
     args = parser.parse_args()
     args.command(args)
