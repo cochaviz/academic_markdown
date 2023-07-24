@@ -15,12 +15,12 @@ import glob
 def _open_file(filename: str, programs=["code", "xdg-open"]):
     for program in programs:
         try:
-            subprocess.run([program, filename], check=True)
-            return
+            return subprocess.run([program, filename], check=True).returncode
         except subprocess.CalledProcessError:
             continue
-
-    logging.warning(f"Could not open file {filename} with any of the following programs: {programs}")
+        
+    logging.warning(f"open_file: Could not open file {filename} with any of the following programs: {programs}.")
+    return 1
 
 def _set_verbosity(level: str):
     numeric_level = getattr(logging, level.upper(), "WARNING")
@@ -188,9 +188,6 @@ def main(source: str, target: str,
     return out_filename
 
 def build(args):
-    _set_verbosity(args.verbosity)
-
-    logging.debug("Debugging 🤓")
 
     out_filename = main(
         args.source, args.target, 
@@ -218,10 +215,14 @@ if __name__=="__main__":
                                      performs other features related to writing and
                                      configuring""") 
 
-    commands = parser.add_subparsers(required=True, title="subcommands")
+    parser.add_argument("--verbosity", type=str, choices=["ERROR", "WARNING", "INFO", "DEBUG"], 
+                        default="WARNING",
+                        help="""Set verbosity level. Default is WARNING.""")
+    commands = parser.add_subparsers(required=True, title="commands")
 
     # build
-    build_command = commands.add_parser("build", description="Build document or set of documents through pandoc.")
+    build_command = commands.add_parser("build", description="Build document or set of documents through pandoc.", 
+                                        help="Command for building files and folders.")
     build_command.add_argument("source", 
                         help="""Source file or folder. In the case that the source is
                              a single file.""") 
@@ -242,9 +243,6 @@ if __name__=="__main__":
                         help="""Check if dependencies are installed. If docker
                              flag is set, it will only check whether docker
                              requirement are met.""")
-    build_command.add_argument("--verbosity", type=str, choices=["ERROR", "WARNING", "INFO", "DEBUG"], 
-                        default="WARNING",
-                        help="""Set verbosity level. Default is WARNING.""")
     build_command.add_argument("--do-not-open", action="store_true", 
                         help="""Do not open output in default code.""")
     build_command.add_argument("--tectonic", action="store_true", 
@@ -256,11 +254,16 @@ if __name__=="__main__":
     # check health
     check_health_command = commands.add_parser("check-health", 
                                       description="""Check if all the necessary
-                                           executables are available and properly configured.""")
+                                           executables are available and properly configured.""",
+                                        help="Command for determining the health of the setup.")
     check_health_command.add_argument("--docker", action="store_true",
                                       help="""Check Docker setup""")
     check_health_command.set_defaults(command=check_health)
 
     # execute 
     args = parser.parse_args()
+
+    _set_verbosity(args.verbosity)
+    logging.debug("Debugging 🤓")
+
     args.command(args)
