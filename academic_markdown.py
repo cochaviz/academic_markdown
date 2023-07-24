@@ -171,8 +171,6 @@ def main(source: str, target: str,
                 )
             out_filename = f"{os.path.splitext(intermediate_filename)[0]}.{target}"
 
-    out_filename = f"{os.getcwd()}/{out_filename}"
-
     logging.info(f"Writing to {out_filename}...")
 
     pandoc_command = [
