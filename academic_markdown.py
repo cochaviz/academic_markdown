@@ -34,7 +34,7 @@ def _set_verbosity(level: str):
 
 def _docker_in_container_warning(docker_option: bool) -> bool:
     if os.path.exists("/.dockerenv") and docker_option:
-            logging.warning("""docker:Docker option seems to be enabled inside a
+            logging.warning("""docker: Docker option seems to be enabled inside a
                             docker container. If you're in a docker container,
                             consider omitting this option.""")
 
@@ -84,7 +84,7 @@ def _get_metadata(path: str, property: str | None = None ) -> str | None:
         try:
             return metadata[property]  
         except KeyError:
-            logging.error(f"Metadata: Property {property} could not be found in metadata")
+            logging.error(f"metadata: Property {property} could not be found in metadata")
     return metadata
         
 def _title_to_filename(title: str):
@@ -116,7 +116,7 @@ def main(source: str, target: str,
 
         # if no files found, we cannot convert
         if len(source_files) == 0:
-            logging.critical(f"main: No markdown files can be found in directory '{source}/'.\
+            logging.critical(f"build: No markdown files can be found in directory '{source}/'.\
                 \nEither declare the specific file you want to convert, or select a different folder.")
             exit(1)
     else:
@@ -147,7 +147,7 @@ def main(source: str, target: str,
         if "tex" in target:
             options.append("--standalone")
     else:
-        logging.error(f"It seems like you are trying to convert one or multiple non-latex/markdown files: {source_files}")
+        logging.error(f"build: It seems like you are trying to convert one or multiple non-latex/markdown files: {source_files}")
 
         if not input("Are you sure you want to do this? [y/N]:").lower() in {"y", "yes"}:
             logging.warning("Not processing further, exiting...")
@@ -161,7 +161,7 @@ def main(source: str, target: str,
     if "." in target:
         out_filename = target
     else:
-        document_title = _get_metadata(source, "title")
+        document_title = _get_metadata(source_files[0], "title")
 
         if document_title is not None:
             out_filename = f"{_title_to_filename(document_title)}.{target}"
@@ -179,7 +179,7 @@ def main(source: str, target: str,
     ]
 
     pandoc_command_string = " ".join(pandoc_command)
-    logging.debug(f"main: Running pandoc command:\n----\n{pandoc_command_string}\n----")
+    logging.debug(f"build: Running pandoc command:\n----\n{pandoc_command_string}\n----")
 
     process = subprocess.run(pandoc_command) 
 
@@ -205,7 +205,6 @@ def build(args):
         _open_file(out_filename)
 
 def check_health(args):
-    # just check health
     health_check = ["./scripts/check_health.sh"]
 
     if args.docker:
