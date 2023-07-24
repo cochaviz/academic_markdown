@@ -120,8 +120,8 @@ def main(source: str, target: str,
                 \nEither declare the specific file you want to convert, or select a different folder.")
             exit(1)
     else:
-        source = os.path.dirname(source)
         source_files = [source]
+        source = os.path.dirname(source)
 
     # all resources should be located in the source folder
     options.append(f"--resource-path={source}")
@@ -138,7 +138,7 @@ def main(source: str, target: str,
             "--metadata=codeBlockCaptions"
         ]
 
-        if len(source_files) > 1:
+        if len(source_files) > 1 or os.path.exists(f"{source}/metadata.yaml"):
             options.append(f"--metadata-file={source}/metadata.yaml")
         if len(source_files) == 1 and "md" not in target:
             options.append(f"--shift-heading-level=-1")
@@ -147,7 +147,7 @@ def main(source: str, target: str,
         if "tex" in target:
             options.append("--standalone")
     else:
-        logging.error("It seems like you are trying to convert a non-(latex|markdown) file.")
+        logging.error(f"It seems like you are trying to convert one or multiple non-latex/markdown files: {source_files}")
 
         if not input("Are you sure you want to do this? [y/N]:").lower() in {"y", "yes"}:
             logging.warning("Not processing further, exiting...")
