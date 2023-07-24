@@ -14,7 +14,7 @@ PREAMBLE="academic_markdown (build_docker.sh):"
 # if container is installed, its fine
 if [[ $(docker image ls | grep zoharcochavi/academic-markdown) ]]; then
     # unless someone really wants to build
-    if [[ $1 -ne "-f" ]]; then
+    if [[ ! $# || ! $1 = "-f" ]]; then
         echo "$PREAMBLE Found docker image (zoharcochavi/academic-markdown), skipping build..."
         exit 0
     fi

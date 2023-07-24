@@ -107,7 +107,7 @@ options:
   --tectonic            Use tectonic when creating PDFs to install missing packages on the fly. Is ignored when docker is used.
 ```
 
-For concrete example of how to use this, refer to the [VSCode
+For concrete examples of how to use this, refer to the [VSCode
 tasks](.vscode/tasks.json). Each of these tasks provides a different
 example of how to use the script.
 
@@ -188,25 +188,26 @@ while still allowing for personalization.
 
 ## Roadmap
 
-- [x] **Dockerized Environment**. Lightweight dockerized environment
-      that allows for a full replacement of `pandoc`. Also automatically
-      downloads missing latex packages.
+- [x] **Dockerized environment**. Lightweight dockerized environment
+  that allows for a full replacement of `pandoc`. Also automatically
+  downloads missing latex packages.
 
-- [ ] **Predefined devcontainer**. This will prevent long waiting times
-      for using a devcontainer both locally and in codespaces.
-
-- [ ] **Github Actions for building**. Use GitHub Actions to
-      automatically build to PDF, $\LaTeX$ according to user preferences.
-      This could be useful for ensuring rendered documents are always
-      up-to-date, and avoiding the necessity for local builds. Could,
-      perhaps, also be faster than building locally and pushing.
+- [x] **Devcontainer environment**. Docker container optimized for devcontainer (include
+  Microsoft goodies, and reduce Docker image build times). And include a range
+  of useful extensions.
 
 - [ ] **Full Manual**. A complete and detailed explanation of how this
-      workflow can be used. This should be an instruction for any person
-      that would like to use markdown for serious writing. It should provide
-      an introduction to `pandoc`, docker, and VSCode.
+  workflow can be used. This should be an instruction for any person
+  that would like to use markdown for serious writing. It should provide
+  an introduction to `pandoc`, docker, and VSCode.
+
+- [ ] **Github Actions for building**. Use GitHub Actions to
+  automatically build to PDF, $\LaTeX$ according to user preferences.
+  This could be useful for ensuring rendered documents are always
+  up-to-date, and avoiding the necessity for local builds. Could,
+  perhaps, also be faster than building locally and pushing.
 
 - [ ] **Independent VSCode Extension**. A VSCode extension, independent
-      of `build.py`. This could be an improved user experience for existing
-      VSCode users. This template should, however, still be as usable
-      without VSCode.
+  of `build.py`. This could be an improved user experience for existing
+  VSCode users. This template should, however, still be as usable
+  without VSCode.
