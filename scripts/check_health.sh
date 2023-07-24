@@ -1,41 +1,55 @@
 #!/usr/bin/env bash
 
+DOCKER_IMAGE="zoharcochavi/academic-markdown"
 PREAMBLE="academic_markdown (check_health.sh):"
+GOOD="✅"
+BAD="⚠️"
+
 HEALTH=0
 
 check_in_path() {
     if [[ $(type -P "$1") ]]; then
-        echo "$PREAMBLE ✅ Found ($1) in path"
+        echo "$PREAMBLE $GOOD Found ($1) in path"
         return 0
     else
-        echo "$PREAMBLE ⚠️ Could not find ($1) in path"
+        echo "$PREAMBLE $BAD Could not find ($1) in path"
         return 1
     fi
 }
 
 check_docker() {
-    check_in_path "docker"
-    if [[ $? ]]; then
+    check_in_path "docker" 
+
+    if ! [[ $? ]]; then
         echo "$PREAMBLE ℹ️ Running docker health check..."
 
         docker run hello-world
-        if [[ $? ]]; then
-            echo "$PREAMBLE ✅ Docker correctly configured"
+        if ! [[ $? ]]; then
+            echo "$PREAMBLE $GOOD Docker correctly configured"
         else
-            echo "$PREAMBLE ⚠️ Docker does not seem to be configured correctly"
-            HEALTH=1
+            echo "$PREAMBLE $BAD Docker does not seem to be configured correctly"
+            return 1
         fi
 
-        if [[ $(docker images | grep cochaviz/academic_markdown) ]]; then
-            echo "$PREAMBLE ✅ Found 'cochaviz/academic_markdown' docker image"
+        if ! [[ $(docker images | grep $DOCKER_IMAGE) ]]; then
+            echo "$PREAMBLE $GOOD Found '$DOCKER_IMAGE' docker image"
         else
-            echo "$PREAMBLE ⚠️ Could not find image 'cochaviz/academic_markdown'.\nPlease run the install script (scripts/build_docker.sh) or the corresponding VSCode Task."
-            HEALTH=1
+            echo "$PREAMBLE ℹ️ Could not find image '$DOCKER_IMAGE'."
+            echo "$PREAMBLE ℹ️ Running build_docker script to resolve..."
+
+            if [[ $(./scripts/build_docker.sh) ]]; then
+                echo "$PREAMBLE $GOOD Fixed Docker setup!"
+            else
+                echo "$PREAMBLE $BAD Could not fix Docker setup automatically, please check the logs to locate the issue."
+                return 1
+            fi
         fi
     else
         echo "$PREAMBLE ℹ️ Not running docker health check since it cannot be found on path..."
-        HEALTH=1
+        return 1
     fi
+
+    return 0
 }
 
 dependencies=(

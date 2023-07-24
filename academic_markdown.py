@@ -103,9 +103,10 @@ def build(source: str, target: str,
     if docker:
         _docker_in_container_warning(docker)
         pandoc = shlex.split(f"docker run \
+            --user $(id -u):$(id -g) \
             --mount type=bind,source={os.getcwd()},target=/var/data \
             --workdir=/var/data \
-            cochaviz/academic_markdown")
+            zoharcochavi/academic-markdown")
     else:
         pandoc = shlex.split(pandoc)
     

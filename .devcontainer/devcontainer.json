@@ -1,8 +1,5 @@
 {
-  "name": "Academic Markdown",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "image": "docker.io/zoharcochavi/academic-markdown",
   "customizations": {
     "vscode": {
       "extensions": [

@@ -12,12 +12,26 @@
 PREAMBLE="academic_markdown (build_docker.sh):"
 
 # if container is installed, its fine
-if [[ $(docker image ls | grep cochaviz/academic_markdown) ]]; then
-    if ! [[ $1 = "-f" ]]; then
-        echo "$PREAMBLE Found docker image (cochaviz/academic_markdown), skipping build..."
+if [[ $(docker image ls | grep zoharcochavi/academic-markdown) ]]; then
+    # unless someone really wants to build
+    if [[ $1 -ne "-f" ]]; then
+        echo "$PREAMBLE Found docker image (zoharcochavi/academic-markdown), skipping build..."
         exit 0
     fi
+    # remove -f option (the rest are build commands)
     shift
 fi
 
-docker build -t cochaviz/academic_markdown $@ .devcontainer/
+# if there are no build commands
+if [[ $# ]]; then
+    echo "$PREAMBLE Attempting to pull from registry"
+    docker pull zoharcochavi/academic-markdown 
+fi
+
+# if there are explit build commands or the previous failed
+if [[ $?  || ! $# ]]; then
+    echo "$PREAMBLE Pulling unuccessful, or explicit build arguments given, building locally"
+    docker build -t zoharcochavi/academic-markdown $@ .devcontainer/
+fi
+
+exit $?
