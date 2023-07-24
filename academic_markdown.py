@@ -6,7 +6,6 @@ import io
 import yaml
 import re
 import subprocess
-import shutil
 import shlex
 
 import logging
@@ -95,9 +94,10 @@ def _title_to_filename(title: str):
 
     return filename
 
-def main(source: str, target: str, 
-         options: str = "", docker: bool = False, 
-         pandoc: str = "pandoc", tectonic: bool = False):
+def build(source: str, target: str, 
+         options: list[str] = [], docker: bool = False, 
+         pandoc: str = "pandoc", tectonic: bool = False, 
+         do_not_open: bool = True):
         
     if docker:
         _docker_in_container_warning(docker)
@@ -185,24 +185,13 @@ def main(source: str, target: str,
         logging.critical(f"pandoc: Exited unexpectedly.")
         exit(process.returncode)
 
-    return out_filename
-
-def build(args):
-
-    out_filename = main(
-        args.source, args.target, 
-        args.options, 
-        pandoc=args.pandoc, docker=args.docker,
-        tectonic=args.tectonic
-    )
-
-    if not args.do_not_open:
+    if not do_not_open:
         _open_file(out_filename)
 
-def check_health(args):
+def check_health(docker: bool = False):
     health_check = ["./scripts/check_health.sh"]
 
-    if args.docker:
+    if docker:
         health_check.append("--docker") 
 
     exit(subprocess.run(health_check).returncode)
@@ -266,4 +255,4 @@ if __name__=="__main__":
     _set_verbosity(args.verbosity)
     logging.debug("Debugging 🤓")
 
-    args.command(args)
+    args.command(**args)
