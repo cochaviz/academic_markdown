@@ -4,7 +4,7 @@
     {
       "label": "Build document",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py build ${relativeFile} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py build ${useTectonic} ${relativeFile} ${input:target}",
       "problemMatcher": [],
       "group": {
         "kind": "build",
@@ -21,7 +21,7 @@
     {
       "label": "Build folder",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py build ${relativeFileDirname} ${input:target}",
+      "command": "python3 ${workspaceFolder}/academic_markdown.py build ${useTectonic} ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": true

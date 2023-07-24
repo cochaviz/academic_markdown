@@ -12,6 +12,9 @@
       ]
     }
   },
+  "remoteEnv": {
+    "useTectonic": "--tectonic"
+  },
   "postCreateCommand": "pip3 install -r .devcontainer/requirements.txt",
   "remoteUser": "markdown-warrior"
 }

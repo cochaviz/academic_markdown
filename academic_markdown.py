@@ -257,7 +257,5 @@ if __name__=="__main__":
 
     _set_verbosity(args.verbosity)
     logging.debug("Debugging 🤓")
-    
-    print(args)
 
     args.command(**args.__dict__)
