@@ -12,17 +12,15 @@ import shlex
 import logging
 import glob
 
-def _open_file(filename: str):
-    # open file first by trying to open in VSCode, then with the
-    # default pdf reader. Not sure whether this should be the other way around
-
-    try:
-        subprocess.run(["code", filename], check=True)
-    except subprocess.CalledProcessError:
+def _open_file(filename: str, programs=["code", "xdg-open"]):
+    for program in programs:
         try:
-            subprocess.run(["xdg-open", filename], check=True)
+            subprocess.run([program, filename], check=True)
+            return
         except subprocess.CalledProcessError:
-            logging.warning(f"Could not open {filename} using either 'code' or 'xdg-open'") 
+            continue
+
+    logging.warning(f"Could not open file {filename} with any of the following programs: {programs}")
 
 def _set_verbosity(level: str):
     numeric_level = getattr(logging, level.upper(), "WARNING")
