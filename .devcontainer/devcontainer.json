@@ -5,21 +5,18 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        // markdown linting and citing
         "yzhang.markdown-all-in-one",
         "DavidAnson.vscode-markdownlint",
         "goessner.mdmath",
         "notZaki.pandocciter",
-        // writing aids
         "streetsidesoftware.code-spell-checker",
         "znck.grammarly",
         "stkb.rewrap",
         "ms-vscode.wordcount",
-        // previewing
         "bierner.github-markdown-preview",
         "tomoki1207.vscode-pdf",
-        // latex utilities
-        "James-Yu.latex-workshop"
+        "James-Yu.latex-workshop",
+        "esbenp.prettier-vscode"
       ]
     }
   },
