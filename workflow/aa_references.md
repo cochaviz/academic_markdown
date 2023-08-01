@@ -2,3 +2,5 @@
 
 ::: {#refs}
 :::
+
+`\printbibliography`{#latex}

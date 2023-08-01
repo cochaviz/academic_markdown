@@ -4,6 +4,7 @@ author: Zohar Cochavi
 bibliography:
   - bibliography.bib
 
-documentclass: elsarticle
-documentoption:
-  - 5p
+documentclass: book
+toc: true
+
+cite-method: citeproc
