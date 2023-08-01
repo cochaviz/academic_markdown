@@ -175,11 +175,13 @@ def build(
     target: str,
     options: list[str] = [],
     docker: bool = False,
-    pandoc: list[str] = ["pandoc"],
+    pandoc: str = "pandoc",
     tectonic: bool = False,
     open_file: bool = True,
-    **_,
-):  # throw away all other added arguments
+    **_, # throw away all other added arguments
+):  
+    pandoc: list[str] = [pandoc]
+
     if docker:
         _docker_in_container_warning(docker)
         pandoc = shlex.split(
@@ -189,8 +191,6 @@ def build(
             --workdir=/var/data \
             zoharcochavi/academic-markdown"
         )
-    else:
-        pandoc = shlex.split(" ".join(pandoc))
 
     # source always refers to the folder which is being built
     if os.path.isdir(source):
