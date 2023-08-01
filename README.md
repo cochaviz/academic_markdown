@@ -1,8 +1,5 @@
 # Academic Markdown - Tools and Guide
 
-[![Open in Dev
-Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cochaviz/academic_markdown)
-
 This repository contains my workflow for using markdown and `pandoc` for
 academic writing and serves as a template for that workflow. If you’re
 just looking to try it out, press the green button that says *Use This
@@ -11,8 +8,8 @@ up a more permanent version of this environment.
 
 In this README, you will find instructions on how to use `build.py` and
 the provided `Dockerfile`. That is, how to set up your system to
-successfully build markdown files to `pdf`, $\LaTeX$, `HTML`, and
-markdown (that is Github-flavoured markdown with rendered citations).
+successfully build markdown files to `pdf`, LaTeX, `HTML`, and markdown
+(that is Github-flavoured markdown with rendered citations).
 
 In *Workflow*, I will show how I use this repository and VSCode in
 conjunction with Zotero to write articles, surveys, etc. This is
@@ -27,7 +24,7 @@ For my writing, I wanted to be able to do the following things:
 - Work locally (preferably VSCode).
 - Write academic papers and reports (e.g. work with Zotero and create
   figures).
-- Create $\LaTeX$, `markdown`, and pdf files.
+- Create LaTeX, `markdown`, and pdf files.
 - Focus on writing, not on markup.
 
 My conclusion was that writing in markdown and using `pandoc` to export
@@ -121,35 +118,36 @@ be set up similarly with any IDE.
 #### Project Structure
 
 I imagine two ways of writing which I have often encountered myself. The
-first is a situation in which you only need to write a small report. The
-second is a situation where multiple files are required for that single
-final document to avoid one incredibly large document.
+first is a situation in which you only need to write one or multiple
+smaller reports (see lst. 1). The second is a situation where multiple
+files are required for that single final document to avoid one
+incredibly large document (see lst. 2).
 
-<div id="lst:single_file_setup" class="listing txt">
+<div id="lst:single_file_setup" class="listing bash">
 
-Listing 1: Setup with a single file. Since all the information can be
-found in one file (besides perhaps the bibliography), `metadata.yaml` is
-optional and front matter can also be used.
+Listing 1: Setup with a single file. Metadata regarding the markdown
+files can be found in their respective frontmatter. When building a
+‘folder’ without a `metadata.yaml` all the files will be rendered
+separately.
 
-``` txt
+``` bash
 ├── academic_markdown.py
 └── docs
     ├── my_report.md
     ├── bibliography.bib
-    ├── images
-    └── [metadata.yaml] // optional, preferrably use frontmatter
+    └── images
 ```
 
 </div>
 
-<div id="lst:multiple_file_setup" class="listing txt">
+<div id="lst:multiple_file_setup" class="listing bash">
 
 Listing 2: Setup with multiple files. Here, `pandoc` would use the
 frontmatter of the first document, if available, but I think the
 `metadata.yaml` should be provided. This separates configurations from
 content in larger projects.
 
-``` txt
+``` bash
 ├── academic_markdown.py
 └── docs
     ├── 01_introduction.md
@@ -162,11 +160,15 @@ content in larger projects.
 
 </div>
 
-When using `academic_markdown.py`, these situations are determined by
-the number of files in the target folder. When there is only one, the
-first situation is assumed, and `metadata.yaml` is optional. When there
-are more files, the second situation is assumed, and `metadata.yaml` is
-required.
+When using `academic_markdown.py`, these situations are distinguished by
+the presence of the `metadata.yaml` file. When building a single
+document, the situations are barely distinguishable, save for the use of
+`metadata.yaml` to provide pandoc with metadata if it is present. When
+building a folder, however, the presence of the `metadata.yaml` file
+will determine whether a single document or multiple are produced. In
+the case a `metadata.yaml` file is found, all the markdown files in the
+folder are concatenated into one rendered file. When it is absent, each
+document is rendered separately.
 
 #### Integration with VSCode
 
@@ -183,13 +185,13 @@ required.
 ## Motivation
 
 My reasoning is as follows: Markdown is a great format to write in but
-lacks configurability. $\LaTeX$ is great for configurability, but rather
+lacks configurability. LaTeX is great for configurability, but rather
 hard to write in (updates take quite a while to render, and the syntax
 is sometimes rather distracting). One should focus on writing first, and
 then make small adjustments where necessary. For this reason, I first
-write in Markdown and then convert to PDF through $\LaTeX$. In case I
-would like to customize certain aspects of the exported file, I export
-to $\LaTeX$ and then to pdf.
+write in Markdown and then convert to PDF through LaTeX. In case I would
+like to customize certain aspects of the exported file, I export to
+LaTeX and then to pdf.
 
 While all of this is supported by `pandoc`, finding a system to work
 with this is not necessarily trivial. This repository should provide
@@ -212,10 +214,10 @@ while still allowing for personalization.
   an introduction to `pandoc`, docker, and VSCode.
 
 - [ ] **Github Actions for building**. Use GitHub Actions to
-  automatically build to PDF, $\LaTeX$ according to user preferences.
-  This could be useful for ensuring rendered documents are always
-  up-to-date, and avoiding the necessity for local builds. Could,
-  perhaps, also be faster than building locally and pushing.
+  automatically build to PDF, LaTeX according to user preferences. This
+  could be useful for ensuring rendered documents are always up-to-date,
+  and avoiding the necessity for local builds. Could, perhaps, also be
+  faster than building locally and pushing.
 
 - [ ] **Independent VSCode Extension**. A VSCode extension, independent
   of `build.py`. This could be an improved user experience for existing
