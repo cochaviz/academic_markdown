@@ -1,4 +1,4 @@
-# Introduction
+# Preface
 
 A long time ago, there was a boy, who, like all others in the land of academics
 whished to create nicely formatted, accessible documents. As most people in the
