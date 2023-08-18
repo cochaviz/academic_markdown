@@ -37,10 +37,18 @@ Markdown, we need something more native.
 Thus, to accommodate the use of figures, and especially figure captions and
 references, we use `pandoc-crossref`. This `pandoc` filter[^pandoc_filter]
 extends the Markdown syntax to include figure markup and automatically generates
-link identifiers for headers/sections too (see [Figures] for examples). This one
-of the great things about `pandoc`, as it is very configurable it can be molded
-to your specific needs. But this of course has a downside, namely that it can be
-quite complex.
+link identifiers for headers/sections too (see [@fig:example_image] and
+[@lst:example_image]). This one of the great things about `pandoc`, as it is
+very configurable it can be molded to your specific needs. But this of course
+has a downside, namely that it can be quite complex.
+
+![An example image](https://via.placeholder.com/200x150){#fig:example_image}
+
+```markdown
+![An example image](https://via.placeholder.com/200x150){#fig:example_image}
+```
+
+: The corresponding code for an example image {#lst:example_image}
 
 Since we are working in `pandoc` and it allows for some extensions which are not
 native to Markdown, it is important to note that we work in _pandoc-flavored_
