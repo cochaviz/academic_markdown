@@ -177,7 +177,7 @@ def build(
     docker: bool = False,
     pandoc: str = "pandoc",
     tectonic: bool = False,
-    open_file: bool = True,
+    open_rendered: bool = False,
     **_, # throw away all other added arguments
 ):  
     pandoc: list[str] = [pandoc]
@@ -206,6 +206,9 @@ def build(
     else:
         source_files = [source]
         source = os.path.dirname(source)
+
+    # files should be rendered together in order
+    source_files.sort()
 
     # all resources should be located in the source folder
     options.append(f"--resource-path={source}")
@@ -251,7 +254,7 @@ def build(
         logging.critical(f"pandoc: Exited unexpectedly.")
         exit(returncode)
 
-    if open_file:
+    if open_rendered:
         _open_file(out_filename)
 
 
@@ -321,16 +324,9 @@ if __name__ == "__main__":
                              be installed.""",
     )
     build_command.add_argument(
-        "--check-health",
+        "--open-rendered",
         action="store_true",
-        help="""Check if dependencies are installed. If docker
-                             flag is set, it will only check whether docker
-                             requirement are met.""",
-    )
-    build_command.add_argument(
-        "--do-not-open",
-        action="store_false",
-        help="""Do not open output in default code.""",
+        help="""Open rendered file(s) in default file viewer.""",
     )
     build_command.add_argument(
         "--tectonic",
