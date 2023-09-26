@@ -235,7 +235,7 @@ def build(
 
     # if docker is used, set tectonic option by default
     if (tectonic or docker) and "pdf" in target:
-        options.append("--pdf-engine=tectonic")
+        options += ["--pdf-engine=tectonic", "--pdf-engine-opt=-Z", "--pdf-engine-opt=continue-on-errors"]
 
     out_filename = None
     returncode = 0
