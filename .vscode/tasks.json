@@ -37,7 +37,7 @@
     {
       "label": "Build document (Docker)",
       "type": "shell",
-      "dependsOn": ["Docker Build"],
+      // "dependsOn": ["Docker Build"],
       "command": "academic_markdown build --docker ${relativeFile} ${input:target}",
       "group": {
         "kind": "build",
@@ -54,7 +54,7 @@
     {
       "label": "Build folder (Docker)",
       "type": "shell",
-      "dependsOn": ["Docker Build"],
+      // "dependsOn": ["Docker Build"],
       "command": "academic_markdown build --docker ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
