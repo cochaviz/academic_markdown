@@ -17,7 +17,16 @@ RUN curl https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/
 RUN ash common-alpine.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" \
     && rm common-alpine.sh
 
+# install mermaid dependencies
+RUN apk add npm
+RUN npm install --global mermaid-filter
+
 # install and test tectonic
 RUN curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
 RUN mv tectonic /usr/bin/
 RUN tectonic --version
+
+USER $USERNAME
+
+ENV PATH=$PATH:$HOME/.local/bin/
+RUN pip3 install academic_markdown
