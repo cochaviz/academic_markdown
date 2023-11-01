@@ -1,6 +1,7 @@
 {
   "name": "Academic Markdown",
-  "image": "docker.io/zoharcochavi/academic-markdown",
+  // "image": "docker.io/zoharcochavi/academic-markdown",
+  "build": { "dockerfile": "Dockerfile" },
 
   "customizations": {
     "vscode": {
@@ -26,5 +27,5 @@
   },
   "remoteUser": "markdown-warrior",
 
-  "postCreateCommand": "pip3 install -r .devcontainer/requirements.txt"
+  "postCreateCommand": "pip3 install academic_markdown"
 }
