@@ -1,7 +1,7 @@
 {
   "name": "Academic Markdown",
-  "image": "docker.io/zoharcochavi/academic-markdown", // for quick building
-  // "build": { "dockerfile": "Dockerfile" },           // for local building
+  // "image": "docker.io/zoharcochavi/academic-markdown", // for quick building
+  "build": { "dockerfile": "Dockerfile" }, // for local building
 
   "customizations": {
     "vscode": {
@@ -11,22 +11,23 @@
         "goessner.mdmath",
         "notZaki.pandocciter",
         "streetsidesoftware.code-spell-checker",
-        "znck.grammarly",
         "stkb.rewrap",
         "ms-vscode.wordcount",
         "bierner.github-markdown-preview",
         "tomoki1207.vscode-pdf",
         "James-Yu.latex-workshop",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "kzvi.pandoc-markdown-preview"
       ]
     }
   },
 
   "remoteEnv": {
     "useTectonic": "--tectonic",
-    "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.local/bin/"
+    // academic_markdown installed in the user directory
+    "PATH": "${containerEnv:PATH}:/home/markdown-warrior/.local/bin/"
   },
   "remoteUser": "markdown-warrior",
 
-  "postCreateCommand": "pip3 install academic_markdown"
+  "postCreateCommand": "pip3 install --no-cache-dir academic_markdown"
 }
