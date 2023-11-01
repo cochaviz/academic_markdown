@@ -2,5 +2,6 @@
   "PandocCiter.UseDefaultBib": true,
   "PandocCiter.DefaultBibs": ["workflow/bibliography.bib"],
 
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "pandocMarkdownPreview.extraPandocArguments": "--citeproc -F pandoc-crossref $([ -f ./metadata.yaml ] && echo \"--metadata=metadata.yaml\")"
 }
