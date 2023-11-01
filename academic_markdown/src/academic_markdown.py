@@ -11,6 +11,9 @@ import shlex
 import logging
 import glob
 
+import typer
+
+app = typer.Typer()
 
 def _open_file(filename: str | None, programs: list[str] = ["code", "xdg-open"]):
     if filename is None:
@@ -106,7 +109,7 @@ def _title_to_filename(title: str):
     # keep alphanumeric
     filename = "".join(c for c in title if (c.isalnum() or c == " "))
     # remove any spaces and replace with underscore
-    filename = re.sub("\ +", "_", filename)
+    filename = re.sub("\\ +", "_", filename)
     # make lowercase
     filename = filename.lower()
 
@@ -153,6 +156,7 @@ def subprocess_run_info(command: list[str], *args) -> subprocess.CompletedProces
 def options_source_markdown(source, source_files, target) -> list[str]:
     options = [
         "--from=markdown+mark",
+        "--filter=mermaid-filter",
         "--filter=pandoc-crossref",
         "--citeproc",
         "--metadata=codeBlockCaptions",
@@ -170,6 +174,7 @@ def options_source_markdown(source, source_files, target) -> list[str]:
     return options
 
 
+@app.command()
 def build(
     source: str,
     target: str,
@@ -178,7 +183,7 @@ def build(
     pandoc: str = "pandoc",
     tectonic: bool = False,
     open_rendered: bool = False,
-    **_, # throw away all other added arguments
+    # **_, # throw away all other added arguments
 ):  
     pandoc: list[str] = [pandoc]
 
@@ -258,7 +263,11 @@ def build(
         _open_file(out_filename)
 
 
-def check_health(docker: bool = False, **_):  # throw away all other added arguments
+@app.command()
+def check_health(
+    docker: bool = False, 
+    #  **_ # throw away all other added arguments
+):  
     health_check = ["./scripts/check_health.sh"]
 
     if docker:
@@ -266,93 +275,5 @@ def check_health(docker: bool = False, **_):  # throw away all other added argum
 
     exit(subprocess.run(health_check).returncode)
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="academic_markdown.py",
-        description="""Wrapper for `pandoc` providing sensible
-                                     defaults for rendering from pandoc-flavored
-                                     markdown used in academic writing. Also
-                                     performs other features related to writing and
-                                     configuring""",
-    )
-
-    parser.add_argument(
-        "--verbosity",
-        type=str,
-        choices=["ERROR", "WARNING", "INFO", "DEBUG"],
-        default="WARNING",
-        help="""Set verbosity level. Default is WARNING.""",
-    )
-    commands = parser.add_subparsers(required=True, title="commands")
-
-    # build
-    build_command = commands.add_parser(
-        "build",
-        description="Build document or set of documents through pandoc.",
-        help="Command for building files and folders.",
-    )
-    build_command.add_argument(
-        "source",
-        help="""Source file or folder. In the case that the source is
-                             a single file.""",
-    )
-    build_command.add_argument(
-        "target",
-        help="""Target output file, or extension (pdf, md, tex, etc.). Uses
-                             pandoc under the hood, so refer to their documentation
-                             for the options.""",
-    )
-    build_command.add_argument(
-        "--options",
-        default="",
-        type=list[str],
-        help="""Additional options to pass through to pandoc.""",
-    )
-    build_command.add_argument(
-        "--pandoc",
-        default="pandoc",
-        type=str,
-        help="""Path to pandoc in case it cannot be provided through the
-                             PATH variable. Gets overridden if the --docker option is
-                             set.""",
-    )
-    build_command.add_argument(
-        "--docker",
-        action="store_true",
-        help="""Use docker configuration to build, requires docker to
-                             be installed.""",
-    )
-    build_command.add_argument(
-        "--open-rendered",
-        action="store_true",
-        help="""Open rendered file(s) in default file viewer.""",
-    )
-    build_command.add_argument(
-        "--tectonic",
-        action="store_true",
-        help="""Use tectonic when creating PDFs to install
-                             missing packages on the fly. Is ignored when docker is
-                             used.""",
-    )
-    build_command.set_defaults(command=build)
-
-    # check health
-    check_health_command = commands.add_parser(
-        "check-health",
-        description="""Check if all the necessary
-                                           executables are available and properly configured.""",
-        help="Command for determining the health of the setup.",
-    )
-    check_health_command.add_argument(
-        "--docker", action="store_true", help="""Check Docker setup"""
-    )
-    check_health_command.set_defaults(command=check_health)
-
-    # execute
-    args = parser.parse_args()
-
-    _set_verbosity(args.verbosity)
-    logging.debug("Debugging 🤓")
-
-    args.command(**args.__dict__)
+if __name__=="__main__":
+    app()
