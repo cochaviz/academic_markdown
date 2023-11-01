@@ -29,3 +29,4 @@ RUN tectonic --version
 USER $USERNAME
 
 ENV PATH=$PATH:$HOME/.local/bin/
+RUN pip3 install academic_markdown
