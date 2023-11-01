@@ -4,7 +4,7 @@
     {
       "label": "Build document",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py build $useTectonic ${relativeFile} ${input:target}",
+      "command": "academic_markdown build $useTectonic ${relativeFile} ${input:target}",
       "problemMatcher": [],
       "group": {
         "kind": "build",
@@ -21,7 +21,7 @@
     {
       "label": "Build folder",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py build $useTectonic ${relativeFileDirname} ${input:target}",
+      "command": "academic_markdown build $useTectonic ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -38,7 +38,7 @@
       "label": "Build document (Docker)",
       "type": "shell",
       "dependsOn": ["Docker Build"],
-      "command": "python3 ${workspaceFolder}/academic_markdown.py build --docker ${relativeFile} ${input:target}",
+      "command": "academic_markdown build --docker ${relativeFile} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -55,7 +55,7 @@
       "label": "Build folder (Docker)",
       "type": "shell",
       "dependsOn": ["Docker Build"],
-      "command": "python3 ${workspaceFolder}/academic_markdown.py build --docker ${relativeFileDirname} ${input:target}",
+      "command": "academic_markdown build --docker ${relativeFileDirname} ${input:target}",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -71,7 +71,7 @@
     {
       "label": "Chech health (Local)",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py check-health",
+      "command": "academic_markdown check-health",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -87,7 +87,7 @@
     {
       "label": "Chech health (Docker)",
       "type": "shell",
-      "command": "python3 ${workspaceFolder}/academic_markdown.py check-health --docker",
+      "command": "academic_markdown check-health --docker",
       "group": {
         "kind": "build",
         "isDefault": false
@@ -99,19 +99,6 @@
         "panel": "shared",
         "showReuseMessage": true
       }
-    },
-    {
-      "label": "Docker Build",
-      "type": "shell",
-      "command": "${workspaceFolder}/scripts/build_docker.sh",
-      "presentation": {
-        "echo": true,
-        "reveal": "silent",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true
-      },
-      "problemMatcher": []
     }
   ],
   "inputs": [
