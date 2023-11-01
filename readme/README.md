@@ -11,10 +11,10 @@ just looking to try it out, press the green button that says _Use This
 Template_ and open it in a codespace. Otherwise, continue reading to set
 up a more permanent version of this environment.
 
-In this README, you will find instructions on how to use `build.py` and
-the provided `Dockerfile`. That is, how to set up your system to
-successfully build markdown files to `pdf`, LaTeX, `HTML`, and
-markdown (that is Github-flavoured markdown with rendered citations).
+In this README, you will find instructions on how to use `academic_markdown` and
+the provided `Dockerfile`. That is, how to set up your system to successfully
+build markdown files to `pdf`, LaTeX, `HTML`, and markdown (that is
+Github-flavoured markdown with rendered citations).
 
 In _Workflow_, I will show how I use this repository and VSCode in
 conjunction with Zotero to write articles, surveys, etc. This is
@@ -43,12 +43,14 @@ are available _for free_.
 To start, you can choose to:
 
 - [Use the provided Dockerfile](https://www.docker.com/) to create a
-  container in which the files are built (use the `--docker` flag).
+  container in which the files are built (use the `--docker` flag), in
+  conjunction with the `academic_markdown` command line interface.
 
 - Install the required dependencies ([Python
   (3.11)](https://www.python.org/), [`pandoc`](https://pandoc.org/),
   [`pandoc-crossref`](https://github.com/lierdakil/pandoc-crossref), and
-  [LaTeX](https://www.latex-project.or/)) yourself.
+  [LaTeX](https://www.latex-project.or/)), etc. yourself. (Check
+  `academic_markdown check-health` for the requirements).
 
 - Open this template in a Github codespace (green button in the
   top-right of the repository).
@@ -60,53 +62,53 @@ If you are on Github, using codespaces is definitely the easiest if
 you’d just like to have a look around. Be aware that this might take a
 while to set up (about 2 minutes), but only needs to be done once.
 
+If you're not directly using the devcontainer, you'll have to install the
+`academic_markdown` cli yourself with
+
+```shell
+python3 -m pip install academic_markdown
+```
+
 ### Building
 
 When using VSCode, there are [Build
 tasks](https://code.visualstudio.com/Docs/editor/tasks) that automate
 this process _based on the currently opened file_. This is just a proxy
-for `academic_markdown.py`, and can also be run manually.
+for `academic_markdown`, and can also be run manually.
 
 In case you’d like to build manually, refer to the usage of
-`academic_markdown.py` in the command line.
+`academic_markdown` in the command line.
 
 ```txt
-$ python academic_markdown.py -h
-
-usage: academic_markdown.py [-h] {build,check-health} ...
-
-Wrapper for `pandoc` providing sensible defaults for rendering from pandoc-flavored markdown used in academic writing.
-
-positional arguments:
-  {build,check-health}
-    build               Build document or set of documents through pandoc.
-    check-health        Check if all the necessary executables are available and properly configured
-
-options:
-  -h, --help            show this help message and exit
+Usage: academic_markdown [OPTIONS] COMMAND [ARGS]...                                                          
+                                                                                                               
+╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                                     │
+│ --show-completion             Show completion for the current shell, to copy it or customize the            │
+│                               installation.                                                                 │
+│ --help                        Show this message and exit.                                                   │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ build                                                                                                       │
+│ check-health                                                                                                │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 Specifically, the `build` sub-command.
 
 ```txt
-$ python academic_markdown.py build -h
-
-usage: academic_markdown.py build [-h] [--options OPTIONS] [--pandoc PANDOC] [--docker] [--check-health] [--verbosity {ERROR,WARNING,INFO,DEBUG}] [--do-not-open] [--tectonic] source target
-
-positional arguments:
-  source                Source file or folder. In the case that the source is a single file.
-  target                Target output file, or extension (pdf, md, tex, etc.). Uses pandoc under the hood, so refer to their documentation for the options.
-
-options:
-  -h, --help            show this help message and exit
-  --options OPTIONS     Additional options to pass through to pandoc.
-  --pandoc PANDOC       Path to pandoc in case it cannot be provided through the PATH variable. Gets overridden if the --docker option is set.
-  --docker              Use docker configuration to build, requires docker to be installed.
-  --check-health        Check if dependencies are installed. If docker flag is set, it will only check whether docker requirement are met.
-  --verbosity {ERROR,WARNING,INFO,DEBUG}
-                        Set verbosity level. Default is WARNING.
-  --do-not-open         Do not open output in default code.
-  --tectonic            Use tectonic when creating PDFs to install missing packages on the fly. Is ignored when docker is used.
+╭─ Arguments ─────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    source      TEXT  [default: None] [required]                                                           │
+│ *    target      TEXT  [default: None] [required]                                                           │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --options                                TEXT                                                               │
+│ --docker           --no-docker                 [default: no-docker]                                         │
+│ --pandoc                                 TEXT  [default: pandoc]                                            │
+│ --tectonic         --no-tectonic               [default: no-tectonic]                                       │
+│ --open-rendered    --no-open-rendered          [default: no-open-rendered]                                  │
+│ --help                                         Show this message and exit.                                  │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 For concrete examples of how to use this, refer to the [VSCode
@@ -129,7 +131,8 @@ are required for that single final document to avoid one incredibly large
 document (see @lst:multiple_file_setup).
 
 ```bash
-├── academic_markdown.py
+├── .devcontainer
+├── .vscode
 └── docs
     ├── my_report.md
     ├── bibliography.bib
@@ -141,7 +144,8 @@ in their respective frontmatter. When building a 'folder' without a
 `metadata.yaml` all the files will be rendered separately. {#lst:single_file_setup}
 
 ```bash
-├── academic_markdown.py
+├── .devcontainer
+├── .vscode
 └── docs
     ├── 01_introduction.md
     ├── 02_methodology.md
@@ -156,7 +160,7 @@ first document, if available, but I think the `metadata.yaml` should be
 provided. This separates configurations from content in larger projects.
 {#lst:multiple_file_setup}
 
-When using `academic_markdown.py`, these situations are distinguished by the
+When using `academic_markdown`, these situations are distinguished by the
 presence of the `metadata.yaml` file. When building a single document, the
 situations are barely distinguishable, save for the use of `metadata.yaml` to
 provide pandoc with metadata if it is present. When building a folder, however,
@@ -200,6 +204,10 @@ while still allowing for personalization.
 - [x] **Devcontainer environment**. Docker container optimized for devcontainer (include
   Microsoft goodies, and reduce Docker image build times). And include a range
   of useful extensions.
+
+- [x] **PyPI Package**. Academic Markdown is now available as a `pypi` package!
+  This makes it much easier to install and update the tool. Check its progress
+  on [academic_markdown_cli](https://www.github.com/cochaviz/academic_markdown_cli)
 
 - [ ] **Full Manual**. A complete and detailed explanation of how this
   workflow can be used. This should be an instruction for any person
