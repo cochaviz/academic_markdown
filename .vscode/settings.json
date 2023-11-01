@@ -2,6 +2,5 @@
   "PandocCiter.UseDefaultBib": true,
   "PandocCiter.DefaultBibs": ["workflow/bibliography.bib"],
 
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "python.analysis.typeCheckingMode": "basic"
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

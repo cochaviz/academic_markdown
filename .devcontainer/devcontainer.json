@@ -1,7 +1,7 @@
 {
   "name": "Academic Markdown",
   "image": "docker.io/zoharcochavi/academic-markdown", // for quick building
-  // "build": { "dockerfile": "Dockerfile" },           // for building
+  // "build": { "dockerfile": "Dockerfile" },           // for local building
 
   "customizations": {
     "vscode": {
@@ -23,9 +23,10 @@
   },
 
   "remoteEnv": {
-    "useTectonic": "--tectonic"
+    "useTectonic": "--tectonic",
+    "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.local/bin/"
   },
   "remoteUser": "markdown-warrior",
 
-  "postCreateCommand": "pip3 install --no-cache-dir academic_markdown"
+  "postCreateCommand": "pip3 install academic_markdown"
 }
