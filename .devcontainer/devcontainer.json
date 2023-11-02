@@ -1,7 +1,7 @@
 {
   "name": "Academic Markdown",
-  // "image": "docker.io/zoharcochavi/academic-markdown", // for quick building
-  "build": { "dockerfile": "Dockerfile" }, // for local building
+  "image": "ghcr.io/cochaviz/academic_markdown:main",
+  // "build": { "dockerfile": "Dockerfile" }, // for local building
 
   "customizations": {
     "vscode": {
