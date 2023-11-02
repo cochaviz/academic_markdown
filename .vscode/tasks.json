@@ -103,7 +103,7 @@
     {
       "label": "Update template",
       "type": "shell",
-      "command": "git stash && git remote add template git@github.com:cochaviz/academic_markdown.git || exit 1; git pull template main --allow-unrelated-histories && git add .devcontainer .vscode && git restore . && git stash pop",
+      "command": "git stash && git remote add template git@github.com:cochaviz/academic_markdown.git || exit 1; git pull template main --allow-unrelated-histories && git add .devcontainer .vscode; git stash pop",
       "presentation": {
         "echo": true,
         "reveal": "always",
