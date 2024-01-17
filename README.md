@@ -175,15 +175,83 @@ the case a `metadata.yaml` file is found, all the markdown files in the
 folder are concatenated into one rendered file. When it is absent, each
 document is rendered separately.
 
-#### Integration with VSCode
+#### Quality of Life Improvements - VSCode Extensions and Plugins
 
-- tasks
+I’ve really optimized this workflow for VSCode, which is not to say it
+doesn’t work for other IDEs, but it might require some extra
+configuration. I do work with NeoVIM from time to time, so I will remark
+which plugins I find useful for that too. When using the preconfigured
+devcontainer, these will all be installed automatically.
 
-- links
+That being said, I have configured the most common actions (building a
+single file or a folder with, or without docker) as VSCode tasks. These
+are found in the `.vscode/tasks.json` file. VSCode automatically reads
+these and can be run by looking up *Run Task* in the command palette. In
+NeoVIM, there is a plugin called
+[vs-tasks.nvim](https://github.com/EthanJWright/vs-tasks.nvim) (and
+several similar others) that will read and execute these tasks
+similarly.
 
-- citations
+While the principle of using markdown is not to get too caught up with
+formatting (among others), it is sometimes reassuring to preview your
+document, especially if you use intermittent LaTeX for equations. There
+are various options, multiple of which are included in the devcontainer.
+Firstly, there is the defacto standard [markdown previewer]() which has
+incredibly nice interactivity and support for LaTeX equations. Sadly, it
+does not support citations (as far as I’m aware). If you’d like
+something more akin to the pdf output, there is [Pandoc Renderer]()
+which uses `pandoc` to convert the document to HTML. Because it also
+uses `pandoc`, it resembles the final PDF ender more closely, which
+includes citations and authors defined in the `metadata.yaml`file (if
+present). When working in NeoVIM I generally don’t use previews, and so
+I do not have plugin ready for that purpose. There seem to be various
+such plugins around such as
+[`markdown-preview.nvim`](https://github.com/iamcco/markdown-preview.nvim).
 
-- previewing
+Lastly, to be able to effectively use citations, I use the pandoc-citer
+to search the bibliography. In case of a single file, it’s easy: just
+include the path relative to the current file in the preamble:
+
+<div id="lst:bib_single" class="listing markdown">
+
+Listing 3: How to reference the bibiliography in a standalone markdown
+file.
+
+``` markdown
+---
+title: My Great Work
+author: Zohar Cochavi
+
+bibliography: ../work.bib
+---
+
+It all started when I was a child...
+```
+
+</div>
+
+In case you use the `metadata.yaml` file to define a multi-file
+document, my advice is to define the bibliography in the
+`.vscode/settings.json` file as indicated in lst. 4.
+
+<div id="lst:bib_mult" class="listing json">
+
+Listing 4: Adding bibliography completion when working with multiple
+files.
+
+``` json
+{
+  "PandocCiter.UseDefaultBib": true,
+  "PandocCiter.DefaultBibs": ["work.bib"],
+}
+```
+
+</div>
+
+I have also included some other extensions such as linters and spelling
+checkers. Still, these are the most interesting and worthy of
+mentioning. For the full list of included extensions, please check the
+`devcontainer.json` configuration file.
 
 #### Other IDEs
 
