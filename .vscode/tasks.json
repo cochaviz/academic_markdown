@@ -117,7 +117,13 @@
     {
       "id": "target",
       "description": "Indicate the export file type",
-      "options": ["pdf", "html", "tex", "md"],
+      "options": [
+        "pdf",
+        "html",
+        "tex",
+        "md",
+        "beamer"
+      ],
       "default": "pdf",
       "type": "pickString"
     }
